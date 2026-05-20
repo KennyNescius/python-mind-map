@@ -1,0 +1,6 @@
+{
+  "name": "Интерактивная карта Python",
+  "description": "Визуальная интерактивная карта для быстрого изучения основ языка Python.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
