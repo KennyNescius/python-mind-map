@@ -100,15 +100,18 @@ export const pythonNodes: Node[] = [
   },
   // --- New Types Node ---
   { id: 'none', type: 'customNode', position: { x: -650, y: 200 }, data: { title: 'NoneType', desc: 'Ничего (None)', category: 'types' } },
+  { id: 'typing', type: 'customNode', position: { x: -650, y: 300 }, data: { title: 'Типизация', desc: 'Type Hinting', category: 'types' } },
   
   // --- New Collections Node ---
   { id: 'sets', type: 'customNode', position: { x: 650, y: 200 }, data: { title: 'Множества', desc: 'Уникальные элементы (set)', category: 'collections' } },
   
   // --- New Control Node ---
   { id: 'match', type: 'customNode', position: { x: 0, y: -450 }, data: { title: 'Match-Case', desc: 'Сопоставление шаблонов', category: 'control' } },
+  { id: 'async', type: 'customNode', position: { x: 300, y: -450 }, data: { title: 'Асинхронность', desc: 'async / await', category: 'control' } },
   
   // --- New Functions Node ---
   { id: 'decorators', type: 'customNode', position: { x: 300, y: 450 }, data: { title: 'Декораторы', desc: 'Обертки для функций (@)', category: 'functions' } },
+  { id: 'generators', type: 'customNode', position: { x: -300, y: 450 }, data: { title: 'Генераторы', desc: 'yield и Итераторы', category: 'functions' } },
 
   // --- OOP Branch ---
   { id: 'oop', type: 'customNode', position: { x: -300, y: -250 }, data: { title: 'ООП', desc: 'Объекты и классы', category: 'oop' } },
@@ -121,6 +124,8 @@ export const pythonNodes: Node[] = [
   { id: 'import', type: 'customNode', position: { x: 450, y: -400 }, data: { title: 'Импорт (import)', desc: 'Подключение чужого кода', category: 'modules' } },
   { id: 'pip', type: 'customNode', position: { x: 500, y: -250 }, data: { title: 'Менеджер pip', desc: 'Сторонние библиотеки', category: 'modules' } },
   { id: 'packages', type: 'customNode', position: { x: 300, y: -450 }, data: { title: 'Пакеты', desc: 'Множество модулей', category: 'modules' } },
+  { id: 'venv', type: 'customNode', position: { x: 650, y: -250 }, data: { title: 'Виртуальное окружение', desc: 'Изоляция (venv)', category: 'modules' } },
+  { id: 'testing', type: 'customNode', position: { x: 500, y: -100 }, data: { title: 'Тестирование', desc: 'pytest / unittest', category: 'modules' } },
 
   // --- Errors Branch ---
   { id: 'errors', type: 'customNode', position: { x: -300, y: 250 }, data: { title: 'Ошибки', desc: 'Обработка исключений', category: 'errors' } },
@@ -152,9 +157,12 @@ export const pythonEdges: Edge[] = [
   { id: 'e-func-lambda', source: 'functions', target: 'lambda' },
   // New single edges
   { id: 'e-types-none', source: 'types', target: 'none' },
+  { id: 'e-types-typing', source: 'types', target: 'typing' },
   { id: 'e-collections-sets', source: 'collections', target: 'sets' },
   { id: 'e-control-match', source: 'control', target: 'match' },
+  { id: 'e-control-async', source: 'control', target: 'async' },
   { id: 'e-func-decorators', source: 'functions', target: 'decorators' },
+  { id: 'e-func-generators', source: 'functions', target: 'generators' },
 
   // OOP
   { id: 'e-start-oop', source: 'start', target: 'oop', animated: true },
@@ -167,6 +175,8 @@ export const pythonEdges: Edge[] = [
   { id: 'e-modules-import', source: 'modules', target: 'import' },
   { id: 'e-modules-pip', source: 'modules', target: 'pip' },
   { id: 'e-modules-packages', source: 'modules', target: 'packages' },
+  { id: 'e-modules-venv', source: 'modules', target: 'venv' },
+  { id: 'e-modules-testing', source: 'modules', target: 'testing' },
 
   // Errors
   { id: 'e-start-errors', source: 'start', target: 'errors', animated: true },
@@ -1052,6 +1062,182 @@ parsed_dict = json.loads(json_string)
 
 print(parsed_dict["name"]) # Вывод: Tom
 \`\`\`
+    `
+  },
+  typing: {
+    id: 'typing',
+    title: 'Типизация (Type Hinting)',
+    shortDesc: 'Аннотации типов',
+    content: `
+# Типизация в Python
+
+Несмотря на то, что Python язык с динамической типизацией, в современном коде принято использовать **аннотации типов**. Это не делает язык строго типизированным (интерпретатор не выдаст ошибку во время работы), но помогает редакторам кода (VS Code, PyCharm) и линтерам (например, mypy) находить ошибки до запуска программы.
+
+\`\`\`python
+def greet(name: str) -> str:
+    return f"Привет, {name}"
+
+age: int = 25
+is_active: bool = True
+\`\`\`
+
+## Модуль typing
+
+Для более сложных структур используется встроенный модуль \`typing\`.
+
+\`\`\`python
+from typing import List, Dict, Optional, Union
+
+# Список чисел
+scores: List[int] = [10, 20, 30]
+
+# Словарь, где ключ - строка, а значение - число
+config: Dict[str, int] = {"port": 8080}
+
+# Функция, которая может вернуть строку или ничего (None)
+def get_user(user_id: int) -> Optional[str]:
+    if user_id == 1:
+        return "Admin"
+    return None
+\`\`\`
+    `
+  },
+  generators: {
+    id: 'generators',
+    title: 'Генераторы и Итераторы',
+    shortDesc: 'yield (ленивые вычисления)',
+    content: `
+# Генераторы
+
+Генераторы — это специальный вид функций, которые могут приостанавливать свое выполнение и возвращать промежуточный результат. Для этого используется ключевое слово \`yield\`.
+
+Главный плюс генераторов: они **экономят память**. Вместо того чтобы сразу создавать огромный список в памяти, генератор вычисляет элементы "на лету" по одному.
+
+\`\`\`python
+def count_up_to(max_value):
+    count = 1
+    while count <= max_value:
+        yield count # Возвращаем значение и ставим на паузу
+        count += 1
+
+# Использование
+counter = count_up_to(5)
+for number in counter:
+    print(number) 
+# Выведет 1 2 3 4 5
+\`\`\`
+
+## Генераторные выражения
+
+Похоже на списковые включения (list comprehensions), но используются круглые скобки.
+
+\`\`\`python
+# Обычный список (сразу в памяти)
+squares_list = [x**2 for x in range(1000000)] 
+
+# Генератор (занимает минимум памяти)
+squares_gen = (x**2 for x in range(1000000))
+\`\`\`
+    `
+  },
+  async: {
+    id: 'async',
+    title: 'Асинхронность (asyncio)',
+    shortDesc: 'async / await',
+    content: `
+# Асинхронное программирование
+
+Асинхронность позволяет вашей программе не блокироваться (не зависать) во время долгого ожидания, например, при скачивании файла из сети или запроса к базе данных. Пока одна задача "ждет", программа может выполнять другие полезные действия.
+
+Для этого в Python используется ключевое слово \`async\` для определения корутин и \`await\` для ожидания результатов.
+
+\`\`\`python
+import asyncio
+
+async def fetch_data():
+    print("Начинаем скачивание...")
+    # Симуляция долгой сетевой операции (2 секунды)
+    await asyncio.sleep(2) 
+    print("Скачивание завершено!")
+    return {"data": 42}
+
+async def main():
+    print("Запуск программы")
+    # await говорит: "подожди результат этой корутины"
+    result = await fetch_data() 
+    print(result)
+
+# Запуск асинхронного цикла событий
+asyncio.run(main())
+\`\`\`
+
+Модуль \`asyncio\` — это ядро асинхронной работы в стандартной библиотеке Python.
+    `
+  },
+  testing: {
+    id: 'testing',
+    title: 'Тестирование',
+    shortDesc: 'pytest / unittest',
+    content: `
+# Тестирование кода
+
+Писать тесты — признак хорошего тона. Тесты проверяют, делает ли ваш код то, что от него ожидается, и защищают от поломок в будущем.
+
+В Python есть встроенный модуль \`unittest\`, но стандартом де-факто в индустрии стал сторонний фреймворк **pytest**, потому что он намного удобней и лаконичней.
+
+## Пример с pytest
+
+Установка: \`pip install pytest\`
+
+Представим, что у нас есть функция:
+\`\`\`python
+# файл math_tools.py
+def add(a, b):
+    return a + b
+\`\`\`
+
+Мы создаем файл для тестов \`test_math_tools.py\`:
+\`\`\`python
+from math_tools import add
+
+def test_add_positive():
+    assert add(2, 3) == 5
+
+def test_add_negative():
+    assert add(-1, -1) == -2
+\`\`\`
+
+Запуск через терминал: \`pytest\`. Фреймворк сам найдет все файлы с префиксом \`test_\`, выполнит в них функции и покажет зеленый или красный статус!
+    `
+  },
+  venv: {
+    id: 'venv',
+    title: 'Виртуальное окружение',
+    shortDesc: 'Изоляция проектов (venv)',
+    content: `
+# Виртуальное окружение (Virtual Environment)
+
+Представьте, что у вас есть Проект А, которому нужна библиотека \`requests\` версии 1.0. И Проект Б, которому нужна та же библиотека, но обязательно версии 2.0. Если ставить всё глобально на компьютер — будет конфликт.
+
+Виртуальное окружение решает эту проблему — оно создает **отдельную изолированную песочницу** (со своим pip и библиотеками) для каждого проекта.
+
+Встроенный модуль для этого — \`venv\`.
+
+## Как это работает?
+
+1. Перейдите в папку вашего проекта в терминале.
+2. Создайте окружение (оно появится в скрытой папке \`.venv\`):
+   \`\`\`bash
+   python -m venv .venv
+   \`\`\`
+3. Активируйте его:
+   - **Windows:** \`.venv\\Scripts\\activate\`
+   - **MacOS/Linux:** \`source .venv/bin/activate\`
+4. Устанавливайте пакеты:
+   \`\`\`bash
+   pip install requests
+   \`\`\`
+Теперь этот модуль установлен **только** в папке вашего проекта!
     `
   }
 };
