@@ -11,6 +11,7 @@ import { Search, Map as MapIcon } from 'lucide-react';
 import CustomNode from './components/CustomNode';
 import Sidebar from './components/Sidebar';
 import FloatingEdge from './components/FloatingEdge';
+import ThemeToggle from './components/ThemeToggle';
 import {
   Concept,
   ContentData,
@@ -20,6 +21,7 @@ import {
   toFlowNodes,
   toPythonEdges,
 } from './data/content';
+import { getTheme } from './data/theme';
 import { useFlowLogic } from './hooks/useFlowLogic';
 
 const nodeTypes = {
@@ -47,6 +49,7 @@ function MindMap({ content }: { content: ContentData }) {
   } = useFlowLogic(pythonNodes, pythonEdges, initialEdges);
 
   const [selectedConcept, setSelectedConcept] = useState<Concept | null>(null);
+  const [theme, setTheme] = useState(getTheme());
 
   // Handle node click
   const onNodeClick: NodeMouseHandler = useCallback(
@@ -77,22 +80,29 @@ function MindMap({ content }: { content: ContentData }) {
   }, [setNodes]);
 
   return (
-    <div className="flex flex-col h-screen w-full bg-slate-50 font-sans relative overflow-hidden">
+    <div className="flex flex-col h-screen w-full bg-slate-50 dark:bg-slate-900 font-sans relative overflow-hidden">
       {/* Search Header */}
       <div className="absolute top-4 left-4 z-10 w-[90%] max-w-[320px]">
-        <div className="bg-white rounded-2xl shadow-xl flex items-center px-4 py-3 border border-slate-100">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl flex items-center px-4 py-3 border border-slate-100 dark:border-slate-700">
           <MapIcon className="w-6 h-6 text-blue-500 mr-3" />
-          <div className="h-6 w-px bg-slate-200 mr-3"></div>
+          <div className="h-6 w-px bg-slate-200 dark:bg-slate-600 mr-3"></div>
           <div className="flex-1 flex items-center relative">
             <Search className="w-5 h-5 text-slate-400 absolute left-0" />
             <input
               type="text"
               placeholder="Поиск по карте..."
-              className="w-full pl-8 pr-2 outline-none text-sm text-slate-700 bg-transparent"
+              className="w-full pl-8 pr-2 outline-none text-sm text-slate-700 dark:text-slate-200 bg-transparent placeholder:text-slate-400"
               value={searchQuery}
               onChange={handleSearch}
             />
           </div>
+        </div>
+      </div>
+
+      {/* Theme toggle */}
+      <div className="absolute top-4 right-4 z-10">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700">
+          <ThemeToggle onChange={setTheme} />
         </div>
       </div>
 
@@ -111,8 +121,13 @@ function MindMap({ content }: { content: ContentData }) {
           minZoom={0.2}
           maxZoom={1.5}
         >
-          <Background color="#cbd5e1" variant={BackgroundVariant.Dots} gap={16} size={1} />
-          <Controls className="bg-white shadow-xl rounded-xl border-slate-100" />
+          <Background
+            color={theme === 'dark' ? '#334155' : '#cbd5e1'}
+            variant={BackgroundVariant.Dots}
+            gap={16}
+            size={1}
+          />
+          <Controls className="shadow-xl rounded-xl" />
         </ReactFlow>
       </div>
 
@@ -134,10 +149,10 @@ export default function App() {
 
   if (error) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-slate-50 p-6 text-center">
+      <div className="flex h-screen w-full items-center justify-center bg-slate-50 dark:bg-slate-900 p-6 text-center">
         <div>
-          <p className="text-lg font-semibold text-slate-800">Ошибка загрузки карты</p>
-          <p className="mt-2 text-sm text-slate-500">{error}</p>
+          <p className="text-lg font-semibold text-slate-800 dark:text-slate-100">Ошибка загрузки карты</p>
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{error}</p>
         </div>
       </div>
     );
@@ -145,8 +160,8 @@ export default function App() {
 
   if (!content) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-slate-50">
-        <p className="text-sm text-slate-500">Загрузка карты…</p>
+      <div className="flex h-screen w-full items-center justify-center bg-slate-50 dark:bg-slate-900">
+        <p className="text-sm text-slate-500 dark:text-slate-400">Загрузка карты…</p>
       </div>
     );
   }

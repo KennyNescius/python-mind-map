@@ -2,17 +2,18 @@ import React, { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
 
+// Muted light palette + matching dark variants (easy on the eyes).
 const categoryColors = {
-  core: 'bg-emerald-100 border-emerald-500 text-emerald-900',
-  types: 'bg-blue-100 border-blue-500 text-blue-900',
-  collections: 'bg-violet-100 border-violet-500 text-violet-900',
-  control: 'bg-amber-100 border-amber-500 text-amber-900',
-  functions: 'bg-rose-100 border-rose-500 text-rose-900',
-  oop: 'bg-indigo-100 border-indigo-500 text-indigo-900',
-  modules: 'bg-cyan-100 border-cyan-500 text-cyan-900',
-  errors: 'bg-red-100 border-red-500 text-red-900',
-  files: 'bg-orange-100 border-orange-500 text-orange-900',
-  default: 'bg-slate-100 border-slate-500 text-slate-900',
+  core: 'bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-200',
+  types: 'bg-sky-50 border-sky-200 text-sky-800 dark:bg-sky-950 dark:border-sky-800 dark:text-sky-200',
+  collections: 'bg-violet-50 border-violet-200 text-violet-800 dark:bg-violet-950 dark:border-violet-800 dark:text-violet-200',
+  control: 'bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-950 dark:border-amber-800 dark:text-amber-200',
+  functions: 'bg-rose-50 border-rose-200 text-rose-800 dark:bg-rose-950 dark:border-rose-800 dark:text-rose-200',
+  oop: 'bg-indigo-50 border-indigo-200 text-indigo-800 dark:bg-indigo-950 dark:border-indigo-800 dark:text-indigo-200',
+  modules: 'bg-cyan-50 border-cyan-200 text-cyan-800 dark:bg-cyan-950 dark:border-cyan-800 dark:text-cyan-200',
+  errors: 'bg-red-50 border-red-200 text-red-800 dark:bg-red-950 dark:border-red-800 dark:text-red-200',
+  files: 'bg-orange-50 border-orange-200 text-orange-800 dark:bg-orange-950 dark:border-orange-800 dark:text-orange-200',
+  default: 'bg-slate-50 border-slate-200 text-slate-800 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200',
 };
 
 const CustomNode = ({ data, selected, id }: { data: any; selected: boolean; id: string }) => {
@@ -51,7 +52,7 @@ const CustomNode = ({ data, selected, id }: { data: any; selected: boolean; id: 
       <button
         key={dir}
         onClick={(e) => onToggle?.(id, dir, e)}
-        className={`${positionClass} bg-white border border-slate-300 rounded-full p-0.5 shadow-sm hover:bg-slate-100 text-slate-500 z-10 transition-colors pointer-events-auto`}
+        className={`${positionClass} bg-white border border-slate-300 rounded-full p-0.5 shadow-sm hover:bg-slate-100 text-slate-500 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 z-10 transition-colors pointer-events-auto`}
       >
         <Icon className="w-4 h-4" />
       </button>
@@ -60,8 +61,8 @@ const CustomNode = ({ data, selected, id }: { data: any; selected: boolean; id: 
 
   return (
     <div
-      className={`px-4 py-3 rounded-xl border-2 shadow-sm transition-all duration-200 min-w-[200px] bg-white relative
-      ${selected ? 'ring-4 ring-opacity-50 ring-blue-400 scale-105 shadow-lg' : 'hover:shadow-md'} 
+      className={`px-4 py-3 rounded-xl border-2 shadow-sm transition-all duration-200 min-w-[200px] relative
+      ${selected ? 'ring-4 ring-opacity-50 ring-blue-400 dark:ring-blue-500 scale-105 shadow-lg' : 'hover:shadow-md'}
       ${categoryColor}`}
       
       style={{
