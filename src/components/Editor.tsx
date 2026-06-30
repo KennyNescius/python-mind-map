@@ -4,11 +4,14 @@ import {
   Background,
   BackgroundVariant,
   Connection,
+  ConnectionMode,
   Controls,
   Edge,
+  MarkerType,
   Node,
   NodeMouseHandler,
   ReactFlow,
+  reconnectEdge,
   useEdgesState,
   useNodesState,
 } from '@xyflow/react';
@@ -28,14 +31,29 @@ import {
 } from 'lucide-react';
 
 import CustomNode from './CustomNode';
+import FloatingEdge from './FloatingEdge';
 import MarkdownView from './MarkdownView';
 import ThemeToggle from './ThemeToggle';
-import { CATEGORIES, ContentData, loadContent, toFlowNodes } from '../data/content';
+import { CATEGORIES, ContentData, loadContent, toFlowEdges, toFlowNodes } from '../data/content';
 import { downloadContent, saveContent } from '../data/save';
 import { IdentityUser, loadIdentity, NetlifyIdentity } from '../data/identity';
 import { getTheme } from '../data/theme';
 
 const nodeTypes = { customNode: CustomNode };
+const edgeTypes = { floating: FloatingEdge };
+
+// Same look as the public map; used for newly drawn edges in the editor.
+const newEdgeProps = {
+  type: 'floating',
+  markerEnd: { type: MarkerType.ArrowClosed, color: '#94a3b8' },
+  style: { strokeWidth: 2, stroke: '#94a3b8' },
+};
+
+// React Flow nodes for the editor: same as the viewer, but flagged editable so
+// CustomNode renders interactive connection handles.
+function toEditableNodes(raw: Parameters<typeof toFlowNodes>[0]): Node[] {
+  return toFlowNodes(raw).map((n) => ({ ...n, data: { ...n.data, editable: true } }));
+}
 
 type ConceptMap = Record<string, { title: string; shortDesc: string; content: string }>;
 type Snapshot = { nodes: Node[]; edges: Edge[]; concepts: ConceptMap };
@@ -134,15 +152,8 @@ export default function Editor() {
   useEffect(() => {
     loadContent()
       .then((content) => {
-        setNodes(toFlowNodes(content.nodes));
-        setEdges(
-          content.edges.map((e) => ({
-            id: e.id,
-            source: e.source,
-            target: e.target,
-            ...(e.animated ? { animated: true } : {}),
-          }))
-        );
+        setNodes(toEditableNodes(content.nodes));
+        setEdges(toFlowEdges(content.edges));
         const cm: ConceptMap = {};
         for (const [id, c] of Object.entries(content.concepts)) cm[id] = { ...c };
         setConcepts(cm);
@@ -200,10 +211,23 @@ export default function Editor() {
 
   const onConnect = useCallback(
     (conn: Connection) => {
+      if (conn.source === conn.target) return; // no self-loops
       pushHistory();
       setEdges((eds) =>
-        addEdge({ ...conn, id: `e-${conn.source}-${conn.target}-${Date.now().toString(36)}` }, eds)
+        addEdge(
+          { ...conn, ...newEdgeProps, id: `e-${conn.source}-${conn.target}-${Date.now().toString(36)}` },
+          eds
+        )
       );
+    },
+    [setEdges, pushHistory]
+  );
+
+  const onReconnect = useCallback(
+    (oldEdge: Edge, newConn: Connection) => {
+      if (newConn.source === newConn.target) return;
+      pushHistory();
+      setEdges((eds) => reconnectEdge(oldEdge, newConn, eds));
     },
     [setEdges, pushHistory]
   );
@@ -249,7 +273,7 @@ export default function Editor() {
       id,
       type: 'customNode',
       position: { x: Math.round((Math.random() - 0.5) * 200), y: Math.round((Math.random() - 0.5) * 200) },
-      data: { title: 'Новый узел', desc: 'Описание', category: 'core' },
+      data: { title: 'Новый узел', desc: 'Описание', category: 'core', editable: true },
     };
     setNodes((nds) => [...nds, newNode]);
     setConcepts((prev) => ({ ...prev, [id]: { title: 'Новый узел', shortDesc: 'Описание', content: '# Новый узел\n' } }));
@@ -280,7 +304,7 @@ export default function Editor() {
   }, [nodes, selectedId, concepts, setNodes, pushHistory]);
 
   const updateNodeData = useCallback(
-    (id: string, patch: Partial<{ title: string; desc: string; category: string }>) => {
+    (id: string, patch: Partial<{ title: string; desc: string; category: string; defaultExpanded: boolean }>) => {
       setNodes((nds) => nds.map((n) => (n.id === id ? { ...n, data: { ...n.data, ...patch } } : n)));
     },
     [setNodes]
@@ -330,6 +354,28 @@ export default function Editor() {
     [setEdges, pushHistory]
   );
 
+  const updateEdgeEnd = useCallback(
+    (id: string, end: 'source' | 'target', nodeId: string) => {
+      pushHistory();
+      setEdges((eds) =>
+        eds.map((e) => {
+          if (e.id !== id) return e;
+          const next = { ...e, [end]: nodeId };
+          return next.source === next.target ? e : next; // ignore self-loops
+        })
+      );
+    },
+    [setEdges, pushHistory]
+  );
+
+  const reverseEdge = useCallback(
+    (id: string) => {
+      pushHistory();
+      setEdges((eds) => eds.map((e) => (e.id === id ? { ...e, source: e.target, target: e.source } : e)));
+    },
+    [setEdges, pushHistory]
+  );
+
   const buildContent = useCallback((): ContentData => {
     return {
       nodes: nodes.map((n) => ({
@@ -339,6 +385,7 @@ export default function Editor() {
           title: String(n.data.title ?? ''),
           desc: String(n.data.desc ?? ''),
           category: String(n.data.category ?? 'core'),
+          ...(n.data.defaultExpanded ? { defaultExpanded: true } : {}),
         },
       })),
       edges: edges.map((e) => ({
@@ -468,6 +515,7 @@ export default function Editor() {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
+            onReconnect={onReconnect}
             onNodeClick={onNodeClick}
             onEdgeClick={onEdgeClick}
             onNodeDragStart={pushHistory}
@@ -478,6 +526,8 @@ export default function Editor() {
               setSelectedEdgeId(null);
             }}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            connectionMode={ConnectionMode.Loose}
             fitView
             fitViewOptions={{ padding: 0.2 }}
             minZoom={0.2}
@@ -507,9 +557,38 @@ export default function Editor() {
                 </button>
               </div>
               <div className="flex flex-col gap-3 p-4">
-                <p className="text-sm text-slate-600 dark:text-slate-300">
-                  {nodeTitle(selectedEdge.source)} → {nodeTitle(selectedEdge.target)}
-                </p>
+                <Field label="Из">
+                  <select
+                    value={selectedEdge.source}
+                    onChange={(e) => updateEdgeEnd(selectedEdge.id, 'source', e.target.value)}
+                    className={inputCls}
+                  >
+                    {nodes.map((n) => (
+                      <option key={n.id} value={n.id}>
+                        {String(n.data.title ?? n.id)}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <Field label="В">
+                  <select
+                    value={selectedEdge.target}
+                    onChange={(e) => updateEdgeEnd(selectedEdge.id, 'target', e.target.value)}
+                    className={inputCls}
+                  >
+                    {nodes.map((n) => (
+                      <option key={n.id} value={n.id}>
+                        {String(n.data.title ?? n.id)}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <button
+                  onClick={() => reverseEdge(selectedEdge.id)}
+                  className="flex w-fit items-center gap-1 rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600"
+                >
+                  ⇄ Развернуть
+                </button>
                 <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
                   <input
                     type="checkbox"
@@ -593,6 +672,18 @@ export default function Editor() {
                   </select>
                 </Field>
 
+                <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
+                  <input
+                    type="checkbox"
+                    checked={!!selectedNode.data.defaultExpanded}
+                    onChange={(e) => {
+                      pushHistory();
+                      updateNodeData(selectedNode.id, { defaultExpanded: e.target.checked });
+                    }}
+                  />
+                  Раскрыт по умолчанию на карте
+                </label>
+
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-medium text-slate-500 dark:text-slate-400">Контент (Markdown)</label>
                   <button
@@ -625,8 +716,10 @@ export default function Editor() {
             <div className="p-6 text-sm text-slate-400 dark:text-slate-500">
               Выберите узел или связь, чтобы редактировать, или добавьте новый узел.
               <div className="mt-4 space-y-1 text-xs text-slate-400 dark:text-slate-500">
-                <p>• Перетаскивайте узлы мышью.</p>
-                <p>• Тяните от края узла к другому, чтобы создать связь.</p>
+                <p>• Перетаскивайте узлы мышью — позиции сохраняются и видны на карте.</p>
+                <p>• Тяните от точки на краю узла к другому узлу, чтобы создать связь.</p>
+                <p>• Концы готовой связи можно перетащить на другой узел.</p>
+                <p>• Связь можно править и в инспекторе (Из/В, развернуть).</p>
                 <p>• Выделите узел/связь и нажмите Delete для удаления.</p>
                 <p>• Ctrl+Z — отменить, Ctrl+Shift+Z — повторить.</p>
               </div>

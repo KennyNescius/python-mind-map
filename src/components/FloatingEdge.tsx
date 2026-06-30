@@ -81,12 +81,16 @@ export default function FloatingEdge({
   });
 
   return (
-    <path
-      id={id}
-      className={`react-flow__edge-path ${animated ? 'custom-animated' : ''}`}
-      d={edgePath}
-      markerEnd={markerEnd}
-      style={{ ...style, fill: 'none' }}
-    />
+    <>
+      {/* Wide transparent path so the (otherwise thin) edge is easy to click. */}
+      <path className="react-flow__edge-interaction" d={edgePath} fill="none" stroke="transparent" strokeWidth={20} />
+      <path
+        id={id}
+        className={`react-flow__edge-path ${animated ? 'custom-animated' : ''}`}
+        d={edgePath}
+        markerEnd={markerEnd}
+        style={{ ...style, fill: 'none' }}
+      />
+    </>
   );
 }
