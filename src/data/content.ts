@@ -30,7 +30,7 @@ export const CATEGORIES = [
 export interface RawNode {
   id: string;
   position: { x: number; y: number };
-  data: { title: string; desc: string; category: string };
+  data: { title: string; desc: string; category: string; defaultExpanded?: boolean };
 }
 
 export interface RawEdge {
