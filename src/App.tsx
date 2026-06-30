@@ -1,9 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ReactFlow,
   Background,
   Controls,
-  MarkerType,
   NodeMouseHandler,
   BackgroundVariant,
 } from '@xyflow/react';
@@ -12,7 +11,15 @@ import { Search, Map as MapIcon } from 'lucide-react';
 import CustomNode from './components/CustomNode';
 import Sidebar from './components/Sidebar';
 import FloatingEdge from './components/FloatingEdge';
-import { pythonNodes, pythonEdges, conceptDetails, Concept } from './data/pythonContent';
+import {
+  Concept,
+  ContentData,
+  loadContent,
+  toConcepts,
+  toFlowEdges,
+  toFlowNodes,
+  toPythonEdges,
+} from './data/content';
 import { useFlowLogic } from './hooks/useFlowLogic';
 
 const nodeTypes = {
@@ -23,17 +30,12 @@ const edgeTypes = {
   floating: FloatingEdge,
 };
 
-const initialEdges = pythonEdges.map((e) => ({
-  ...e,
-  type: 'floating',
-  markerEnd: {
-    type: MarkerType.ArrowClosed,
-    color: '#94a3b8',
-  },
-  style: { strokeWidth: 2, stroke: '#94a3b8' }
-}));
+function MindMap({ content }: { content: ContentData }) {
+  const pythonNodes = React.useMemo(() => toFlowNodes(content.nodes), [content]);
+  const pythonEdges = React.useMemo(() => toPythonEdges(content.edges), [content]);
+  const initialEdges = React.useMemo(() => toFlowEdges(content.edges), [content]);
+  const conceptDetails = React.useMemo(() => toConcepts(content.concepts), [content]);
 
-export default function App() {
   const {
     nodes,
     edges,
@@ -41,7 +43,7 @@ export default function App() {
     onEdgesChange,
     searchQuery,
     setSearchQuery,
-    setNodes
+    setNodes,
   } = useFlowLogic(pythonNodes, pythonEdges, initialEdges);
 
   const [selectedConcept, setSelectedConcept] = useState<Concept | null>(null);
@@ -53,7 +55,7 @@ export default function App() {
       if (concept) {
         setSelectedConcept(concept);
       }
-      
+
       setNodes((nds) =>
         nds.map((n) => ({
           ...n,
@@ -61,7 +63,7 @@ export default function App() {
         }))
       );
     },
-    [setNodes]
+    [setNodes, conceptDetails]
   );
 
   // Handle search highlighting
@@ -76,7 +78,6 @@ export default function App() {
 
   return (
     <div className="flex flex-col h-screen w-full bg-slate-50 font-sans relative overflow-hidden">
-      
       {/* Search Header */}
       <div className="absolute top-4 left-4 z-10 w-[90%] max-w-[320px]">
         <div className="bg-white rounded-2xl shadow-xl flex items-center px-4 py-3 border border-slate-100">
@@ -121,3 +122,34 @@ export default function App() {
   );
 }
 
+export default function App() {
+  const [content, setContent] = useState<ContentData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadContent()
+      .then(setContent)
+      .catch((e) => setError(e instanceof Error ? e.message : String(e)));
+  }, []);
+
+  if (error) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-slate-50 p-6 text-center">
+        <div>
+          <p className="text-lg font-semibold text-slate-800">Ошибка загрузки карты</p>
+          <p className="mt-2 text-sm text-slate-500">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!content) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-slate-50">
+        <p className="text-sm text-slate-500">Загрузка карты…</p>
+      </div>
+    );
+  }
+
+  return <MindMap content={content} />;
+}

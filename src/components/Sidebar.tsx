@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { X } from 'lucide-react';
-import { Concept } from '../data/pythonContent';
+import { Concept } from '../data/content';
 
 interface SidebarProps {
   concept: Concept | null;
