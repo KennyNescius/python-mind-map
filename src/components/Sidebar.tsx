@@ -1,9 +1,7 @@
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { X } from 'lucide-react';
-import { Concept } from '../data/pythonContent';
+import { Concept } from '../data/content';
+import MarkdownView from './MarkdownView';
 
 interface SidebarProps {
   concept: Concept | null;
@@ -31,42 +29,9 @@ export default function Sidebar({ concept, onClose }: SidebarProps) {
 
       <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
         {concept ? (
-          <div className="prose prose-slate prose-sm sm:prose-base max-w-none">
-            <ReactMarkdown
-              components={{
-                code(props: any) {
-                  const { children, className, node, ...rest } = props;
-                  const match = /language-(\w+)/.exec(className || '');
-                  return match ? (
-                    <SyntaxHighlighter
-                      {...rest}
-                      PreTag="div"
-                      children={String(children).replace(/\n$/, '')}
-                      language={match[1]}
-                      style={oneDark}
-                      customStyle={{
-                        margin: '1rem 0',
-                        padding: '1rem',
-                        borderRadius: '0.75rem',
-                        fontSize: '0.875rem',
-                      }}
-                      className="shadow-sm"
-                    />
-                  ) : (
-                    <code {...rest} className={className}>
-                      {children}
-                    </code>
-                  );
-                }
-              }}
-            >
-              {concept.content}
-            </ReactMarkdown>
-          </div>
+          <MarkdownView content={concept.content} />
         ) : (
-          <div className="text-slate-400 text-center mt-10">
-            Ничего не выбрано
-          </div>
+          <div className="text-slate-400 text-center mt-10">Ничего не выбрано</div>
         )}
       </div>
     </div>
