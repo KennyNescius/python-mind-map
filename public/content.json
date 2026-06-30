@@ -435,14 +435,26 @@
     {
       "id": "node-mr0ma83y-2xo",
       "position": {
-        "x": 2461,
-        "y": -344
+        "x": 2236,
+        "y": -229
       },
       "data": {
         "title": "Библиотеки",
         "desc": "Самые популярные библиотеки",
         "category": "core",
         "defaultExpanded": true
+      }
+    },
+    {
+      "id": "node-mr0mfdxh-44q",
+      "position": {
+        "x": 2303,
+        "y": -12
+      },
+      "data": {
+        "title": "Dataframe",
+        "desc": "таблицы",
+        "category": "collections"
       }
     }
   ],
@@ -629,6 +641,11 @@
       "id": "e-collections-node-mr0m9c15-6ys-mr0m9su6",
       "source": "collections",
       "target": "node-mr0m9c15-6ys"
+    },
+    {
+      "id": "e-node-mr0ma83y-2xo-node-mr0mfdxh-44q-mr0milkn",
+      "source": "node-mr0ma83y-2xo",
+      "target": "node-mr0mfdxh-44q"
     }
   ],
   "concepts": {
@@ -816,6 +833,11 @@
       "title": "Библиотеки",
       "shortDesc": "Самые популярные библиотеки",
       "content": "# Что такое библиотеки\n"
+    },
+    "node-mr0mfdxh-44q": {
+      "title": "Dataframe",
+      "shortDesc": "таблицы",
+      "content": "# Таблицы в python\n"
     }
   }
 }
