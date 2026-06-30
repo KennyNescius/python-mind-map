@@ -13,6 +13,20 @@ export type Concept = {
   content: string;
 };
 
+/** Categories drive node colors (see CustomNode). Keep in sync with the
+ *  keys in CustomNode's categoryColors map. */
+export const CATEGORIES = [
+  'core',
+  'types',
+  'collections',
+  'control',
+  'functions',
+  'oop',
+  'modules',
+  'errors',
+  'files',
+] as const;
+
 export interface RawNode {
   id: string;
   position: { x: number; y: number };

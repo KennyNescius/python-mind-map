@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+# SPA fallback so client-side routes like /edit resolve to index.html.
+# Netlify serves /.netlify/functions/* before applying this rule.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
