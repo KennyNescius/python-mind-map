@@ -12,7 +12,7 @@ import {
   useEdgesState,
   useNodesState,
 } from '@xyflow/react';
-import { Download, Eye, EyeOff, Map as MapIcon, Plus, Save, Trash2 } from 'lucide-react';
+import { Download, Eye, EyeOff, LogIn, LogOut, Map as MapIcon, Plus, Save, Trash2 } from 'lucide-react';
 
 import CustomNode from './CustomNode';
 import MarkdownView from './MarkdownView';
@@ -23,6 +23,7 @@ import {
   toFlowNodes,
 } from '../data/content';
 import { downloadContent, saveContent } from '../data/save';
+import { IdentityUser, loadIdentity, NetlifyIdentity } from '../data/identity';
 
 const nodeTypes = { customNode: CustomNode };
 
@@ -39,6 +40,8 @@ export default function Editor() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [identity, setIdentity] = useState<NetlifyIdentity | null>(null);
+  const [user, setUser] = useState<IdentityUser | null>(null);
   const [status, setStatus] = useState<{ kind: 'idle' | 'ok' | 'err' | 'busy'; msg: string }>({
     kind: 'idle',
     msg: '',
@@ -56,6 +59,19 @@ export default function Editor() {
       })
       .catch((e) => setStatus({ kind: 'err', msg: e instanceof Error ? e.message : String(e) }));
   }, [setNodes, setEdges]);
+
+  useEffect(() => {
+    loadIdentity().then((id) => {
+      if (!id) return;
+      setIdentity(id);
+      setUser(id.currentUser());
+      id.on('login', (u) => {
+        setUser(u ?? id.currentUser());
+        id.close();
+      });
+      id.on('logout', () => setUser(null));
+    });
+  }, []);
 
   const onConnect = useCallback(
     (conn: Connection) => {
@@ -141,6 +157,11 @@ export default function Editor() {
   }, [nodes, edges, concepts]);
 
   const onSave = useCallback(async () => {
+    if (identity && !user) {
+      identity.open('login');
+      setStatus({ kind: 'err', msg: 'Войдите, чтобы сохранять изменения на сайте.' });
+      return;
+    }
     setStatus({ kind: 'busy', msg: 'Сохранение…' });
     try {
       await saveContent(buildContent());
@@ -151,7 +172,7 @@ export default function Editor() {
         msg: `${e instanceof Error ? e.message : String(e)} — используйте «Скачать JSON» как запасной вариант.`,
       });
     }
-  }, [buildContent]);
+  }, [buildContent, identity, user]);
 
   const onDownload = useCallback(() => downloadContent(buildContent()), [buildContent]);
 
@@ -182,12 +203,31 @@ export default function Editor() {
         >
           <Download className="h-4 w-4" /> Скачать JSON
         </button>
-        <a
-          href="/"
-          className="ml-auto rounded-lg px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50"
-        >
-          Открыть карту →
-        </a>
+        <div className="ml-auto flex items-center gap-2">
+          {identity &&
+            (user ? (
+              <button
+                onClick={() => identity.logout()}
+                className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                title={user.email}
+              >
+                <LogOut className="h-4 w-4" /> Выйти
+              </button>
+            ) : (
+              <button
+                onClick={() => identity.open('login')}
+                className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100"
+              >
+                <LogIn className="h-4 w-4" /> Войти
+              </button>
+            ))}
+          <a
+            href="/"
+            className="rounded-lg px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50"
+          >
+            Открыть карту →
+          </a>
+        </div>
       </header>
 
       {status.msg && (
