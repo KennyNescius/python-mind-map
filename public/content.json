@@ -63,48 +63,12 @@
     {
       "id": "collections",
       "position": {
-        "x": 350,
-        "y": 0
+        "x": 651,
+        "y": -16
       },
       "data": {
         "title": "Коллекции",
         "desc": "Хранение данных",
-        "category": "collections"
-      }
-    },
-    {
-      "id": "lists",
-      "position": {
-        "x": 862,
-        "y": -123
-      },
-      "data": {
-        "title": "Списки",
-        "desc": "Упорядоченные массивы (list)",
-        "category": "collections"
-      }
-    },
-    {
-      "id": "dicts",
-      "position": {
-        "x": 899,
-        "y": -11
-      },
-      "data": {
-        "title": "Словари",
-        "desc": "Ключ-Значение (dict)",
-        "category": "collections"
-      }
-    },
-    {
-      "id": "tuples",
-      "position": {
-        "x": 871,
-        "y": 88
-      },
-      "data": {
-        "title": "Кортежи",
-        "desc": "Неизменяемые списки (tuple)",
         "category": "collections"
       }
     },
@@ -123,8 +87,8 @@
     {
       "id": "if_else",
       "position": {
-        "x": -150,
-        "y": -450
+        "x": -139,
+        "y": -559
       },
       "data": {
         "title": "Условия (if/else)",
@@ -135,8 +99,8 @@
     {
       "id": "loops",
       "position": {
-        "x": 150,
-        "y": -450
+        "x": 116,
+        "y": -567
       },
       "data": {
         "title": "Циклы (for/while)",
@@ -205,22 +169,10 @@
       }
     },
     {
-      "id": "sets",
-      "position": {
-        "x": 887,
-        "y": 176
-      },
-      "data": {
-        "title": "Множества",
-        "desc": "Уникальные элементы (set)",
-        "category": "collections"
-      }
-    },
-    {
       "id": "match",
       "position": {
-        "x": 0,
-        "y": -450
+        "x": -24,
+        "y": -666
       },
       "data": {
         "title": "Match-Case",
@@ -231,8 +183,8 @@
     {
       "id": "async",
       "position": {
-        "x": 300,
-        "y": -450
+        "x": 213,
+        "y": -458
       },
       "data": {
         "title": "Асинхронность",
@@ -327,8 +279,8 @@
     {
       "id": "import",
       "position": {
-        "x": 450,
-        "y": -400
+        "x": 595,
+        "y": -549
       },
       "data": {
         "title": "Импорт (import)",
@@ -339,8 +291,8 @@
     {
       "id": "pip",
       "position": {
-        "x": 541,
-        "y": -230
+        "x": 761,
+        "y": -431
       },
       "data": {
         "title": "Менеджер pip",
@@ -351,8 +303,8 @@
     {
       "id": "packages",
       "position": {
-        "x": 300,
-        "y": -450
+        "x": 361,
+        "y": -555
       },
       "data": {
         "title": "Пакеты",
@@ -375,8 +327,8 @@
     {
       "id": "testing",
       "position": {
-        "x": 518,
-        "y": -127
+        "x": 596,
+        "y": -195
       },
       "data": {
         "title": "Тестирование",
@@ -467,6 +419,31 @@
         "desc": "Менеджеры контекста",
         "category": "files"
       }
+    },
+    {
+      "id": "node-mr0m9c15-6ys",
+      "position": {
+        "x": 1123,
+        "y": 16
+      },
+      "data": {
+        "title": "Новый узел",
+        "desc": "Описание",
+        "category": "collections"
+      }
+    },
+    {
+      "id": "node-mr0ma83y-2xo",
+      "position": {
+        "x": 2461,
+        "y": -344
+      },
+      "data": {
+        "title": "Библиотеки",
+        "desc": "Самые популярные библиотеки",
+        "category": "core",
+        "defaultExpanded": true
+      }
     }
   ],
   "edges": [
@@ -496,21 +473,6 @@
       "id": "e-types-booleans",
       "source": "types",
       "target": "booleans"
-    },
-    {
-      "id": "e-collections-lists",
-      "source": "collections",
-      "target": "lists"
-    },
-    {
-      "id": "e-collections-dicts",
-      "source": "collections",
-      "target": "dicts"
-    },
-    {
-      "id": "e-collections-tuples",
-      "source": "collections",
-      "target": "tuples"
     },
     {
       "id": "e-start-control",
@@ -553,11 +515,6 @@
       "id": "e-types-typing",
       "source": "types",
       "target": "typing"
-    },
-    {
-      "id": "e-collections-sets",
-      "source": "collections",
-      "target": "sets"
     },
     {
       "id": "e-control-match",
@@ -667,6 +624,11 @@
       "id": "e-files-with",
       "source": "files",
       "target": "context_mgrs"
+    },
+    {
+      "id": "e-collections-node-mr0m9c15-6ys-mr0m9su6",
+      "source": "collections",
+      "target": "node-mr0m9c15-6ys"
     }
   ],
   "concepts": {
@@ -699,21 +661,6 @@
       "title": "Коллекции",
       "shortDesc": "Структуры данных",
       "content": "\n# Коллекции в Python\n\nВ Python встроено 4 основных типа для хранения наборов данных:\n\n1. **Списки (List)** — упорядоченные, изменяемые, допускают дубликаты.\n2. **Кортежи (Tuple)** — упорядоченные, НЕизменяемые, допускают дубликаты.\n3. **Словари (Dictionary)** — упорядоченные (с версии 3.7), изменяемые, хранят пары \"ключ: значение\".\n4. **Множества (Set)** — неупорядоченные, изменяемые, НЕ допускают дубликатов.\n    "
-    },
-    "lists": {
-      "title": "Списки (List)",
-      "shortDesc": "Универсальный массив",
-      "content": "\n# Списки (Lists)\nСписки создаются с помощью квадратных скобок `[]`. В них можно хранить данные разных типов.\n\n```python\nfruits = [\"яблоко\", \"банан\", \"вишня\"]\n\nprint(fruits[0])  # Обращение по индексу -> \"яблоко\"\nprint(fruits[-1]) # Последний элемент -> \"вишня\"\n```\n\n## Основные методы:\n```python\nfruits.append(\"апельсин\")  # Добавить в конец\nfruits.insert(1, \"киви\")   # Вставить на 1-ю позицию\nfruits.remove(\"банан\")     # Удалить по значению\npopped = fruits.pop()      # Удалить и вернуть последний элемент\n```\n\n## Срезы (Slicing):\n```python\nnums = [0, 1, 2, 3, 4, 5, 6]\nprint(nums[1:4])  # [1, 2, 3] (от 1 до 4, не включая 4)\nprint(nums[::-1]) # [6, 5, 4, 3, 2, 1, 0] (Развернуть список)\n```\n    "
-    },
-    "dicts": {
-      "title": "Словари (Dictionary)",
-      "shortDesc": "Хранение пар ключ-значение",
-      "content": "\n# Словари (Dictionaries)\n\nСловари используются для хранения данных в виде пар `Ключ: Значение`. В качестве ключей обычно используют строки или числа.\n\n```python\nuser = {\n  \"name\": \"Алексей\",\n  \"age\": 30,\n  \"role\": \"admin\"\n}\n```\n\n## Как работать:\n```python\nprint(user[\"name\"])       # \"Алексей\"\nuser[\"age\"] = 31          # Изменить значение\nuser[\"city\"] = \"Москва\"   # Добавить новую пару\n\n# Безопасное получение значения:\nprint(user.get(\"role\"))   # \"admin\"\nprint(user.get(\"email\"))  # None (ошибки не будет)\n```\n\n## Методы словаря:\n```python\nprint(user.keys())    # Получить все ключи\nprint(user.values())  # Получить все значения\nprint(user.items())   # Получить пары\n```\n    "
-    },
-    "tuples": {
-      "title": "Кортежи (Tuple)",
-      "shortDesc": "Неизменяемые списки",
-      "content": "\n# Кортежи (Tuples)\n\nКортежи похожи на списки, но они **неизменяемы**. Если вы создали кортеж, вы не можете изменить, добавить или удалить его элементы. Зато они работают быстрее списков.\n\nСоздаются с помощью круглых скобок `()`:\n```python\ncoordinates = (10, 20, 30)\n\nprint(coordinates[0]) # 10\n```\n\nПопытка изменить элемент вызовет ошибку:\n```python\ncoordinates[0] = 15 # TypeError: 'tuple' object does not support item assignment\n```\n\nКортеж из одного элемента пишется с запятой:\n```python\nsingle = (\"один\",)\n```\n    "
     },
     "control": {
       "title": "Управление потоком",
@@ -754,11 +701,6 @@
       "title": "Типизация (Type Hinting)",
       "shortDesc": "Аннотации типов",
       "content": "\n# Типизация в Python\n\nНесмотря на то, что Python язык с динамической типизацией, в современном коде принято использовать **аннотации типов**. Это не делает язык строго типизированным (интерпретатор не выдаст ошибку во время работы), но помогает редакторам кода (VS Code, PyCharm) и линтерам (например, mypy) находить ошибки до запуска программы.\n\n```python\ndef greet(name: str) -> str:\n    return f\"Привет, {name}\"\n\nage: int = 25\nis_active: bool = True\n```\n\n## Модуль typing\n\nДля более сложных структур используется встроенный модуль `typing`.\n\n```python\nfrom typing import List, Dict, Optional, Union\n\n# Список чисел\nscores: List[int] = [10, 20, 30]\n\n# Словарь, где ключ - строка, а значение - число\nconfig: Dict[str, int] = {\"port\": 8080}\n\n# Функция, которая может вернуть строку или ничего (None)\ndef get_user(user_id: int) -> Optional[str]:\n    if user_id == 1:\n        return \"Admin\"\n    return None\n```\n    "
-    },
-    "sets": {
-      "title": "Множества (Set)",
-      "shortDesc": "Только уникальные",
-      "content": "\n# Множества (Set)\n\nМножество — это неупорядоченная коллекция **уникальных** элементов. Они очень эффективны для проверки принадлежности \"входит ли элемент в набор\".\n\nСоздаются с помощью фигурных скобок `{}` или функции `set()`:\n```python\nunique_numbers = {1, 2, 3, 3, 3, 4}\nprint(unique_numbers) # {1, 2, 3, 4} (дубликаты исчезнут!)\n```\n\n## Операции с множествами:\n```python\nA = {1, 2, 3}\nB = {3, 4, 5}\n\nprint(A | B) # Объединение -> {1, 2, 3, 4, 5}\nprint(A & B) # Пересечение -> {3}\nprint(A - B) # Разность -> {1, 2}\n```\n    "
     },
     "match": {
       "title": "Match-Case",
@@ -864,6 +806,16 @@
       "title": "Менеджеры контекста",
       "shortDesc": "Ключевое слово with",
       "content": "\n# Менеджеры контекста (with)\n\nЧтобы не забывать писать `file.close()`, в Питоне есть конструкция `with`. Она **автоматически** закрывает за собой файл (или другое соединение), даже если внутри произошла внезапная ошибка!\n\n```python\nwith open(\"hello.txt\", \"r\", encoding=\"utf-8\") as file:\n    content = file.read()\n    print(content)\n    \n# Относительно этого отступа (за границами блока with) \n# файл УЖЕ безопасно закрыт.\n```\nЭто самый правильный \"Pythonic\" способ работы с файлами.\n    "
+    },
+    "node-mr0m9c15-6ys": {
+      "title": "Новый узел",
+      "shortDesc": "Описание",
+      "content": "# Новый узел\n"
+    },
+    "node-mr0ma83y-2xo": {
+      "title": "Библиотеки",
+      "shortDesc": "Самые популярные библиотеки",
+      "content": "# Что такое библиотеки\n"
     }
   }
 }
