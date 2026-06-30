@@ -156,9 +156,13 @@ export default function Editor() {
       if (!id) return;
       setIdentity(id);
       setUser(id.currentUser());
-      id.on('login', (u) => {
-        setUser(u ?? id.currentUser());
+      id.on('login', () => {
         id.close();
+        // The widget can leave a full-screen overlay that swallows clicks (and a
+        // leftover "#" in the URL). A clean reload removes it; the session is
+        // already persisted, so the user stays logged in.
+        history.replaceState(null, '', window.location.pathname);
+        window.location.reload();
       });
       id.on('logout', () => setUser(null));
     });
