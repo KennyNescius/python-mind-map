@@ -11,6 +11,7 @@ import {
   Node,
   NodeMouseHandler,
   ReactFlow,
+  ReactFlowInstance,
   reconnectEdge,
   useEdgesState,
   useNodesState,
@@ -34,13 +35,24 @@ import CustomNode from './CustomNode';
 import FloatingEdge from './FloatingEdge';
 import MarkdownView from './MarkdownView';
 import ThemeToggle from './ThemeToggle';
-import { CATEGORIES, ContentData, loadContent, toFlowEdges, toFlowNodes } from '../data/content';
+import {
+  CATEGORIES,
+  ContentData,
+  loadContent,
+  toFlowEdges,
+  toFlowNodes,
+  Tree,
+} from '../data/content';
 import { downloadContent, saveContent } from '../data/save';
 import { IdentityUser, loadIdentity, NetlifyIdentity } from '../data/identity';
 import { getTheme } from '../data/theme';
 
 const nodeTypes = { customNode: CustomNode };
 const edgeTypes = { floating: FloatingEdge };
+
+function makeTreeId(): string {
+  return `tree-${Date.now().toString(36)}`;
+}
 
 // Same look as the public map; used for newly drawn edges in the editor.
 const newEdgeProps = {
@@ -68,6 +80,8 @@ export default function Editor() {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [concepts, setConcepts] = useState<ConceptMap>({});
+  const [trees, setTrees] = useState<Tree[]>([]);
+  const [activeTreeId, setActiveTreeId] = useState<string>('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -107,6 +121,7 @@ export default function Editor() {
   }, [snapshot]);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const rfRef = useRef<ReactFlowInstance | null>(null);
 
   // For text fields: capture a snapshot on focus, commit it to history on the
   // first change of that editing session.
@@ -159,6 +174,15 @@ export default function Editor() {
         const cm: ConceptMap = {};
         for (const [id, c] of Object.entries(content.concepts)) cm[id] = { ...c };
         setConcepts(cm);
+        setTrees(content.trees);
+        let initial = content.trees[0]?.id ?? '';
+        try {
+          const s = localStorage.getItem('activeTree');
+          if (s && content.trees.some((t) => t.id === s)) initial = s;
+        } catch {
+          /* ignore */
+        }
+        setActiveTreeId(initial);
         setLoaded(true);
       })
       .catch((e) => setStatus({ kind: 'err', msg: e instanceof Error ? e.message : String(e) }));
@@ -275,13 +299,51 @@ export default function Editor() {
       id,
       type: 'customNode',
       position: { x: Math.round((Math.random() - 0.5) * 200), y: Math.round((Math.random() - 0.5) * 200) },
-      data: { title: 'Новый узел', desc: 'Описание', category: 'core', editable: true },
+      data: { title: 'Новый узел', desc: 'Описание', category: 'core', editable: true, treeId: activeTreeId },
     };
     setNodes((nds) => [...nds, newNode]);
     setConcepts((prev) => ({ ...prev, [id]: { title: 'Новый узел', shortDesc: 'Описание', content: '# Новый узел\n' } }));
     setSelectedId(id);
     setSelectedEdgeId(null);
-  }, [setNodes, pushHistory]);
+  }, [setNodes, pushHistory, activeTreeId]);
+
+  const changeTree = useCallback((id: string) => {
+    setActiveTreeId(id);
+    setSelectedId(null);
+    setSelectedEdgeId(null);
+    try {
+      localStorage.setItem('activeTree', id);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const createTree = useCallback(() => {
+    const title = window.prompt('Название новой темы:')?.trim();
+    if (!title) return;
+    pushHistory();
+    const treeId = makeTreeId();
+    const rootId = makeId();
+    const rootNode: Node = {
+      id: rootId,
+      type: 'customNode',
+      position: { x: 0, y: 0 },
+      data: { title, desc: 'Корень темы', category: 'core', editable: true, treeId, defaultExpanded: true },
+    };
+    setTrees((ts) => [...ts, { id: treeId, title, rootId }]);
+    setNodes((nds) => [...nds, rootNode]);
+    setConcepts((prev) => ({ ...prev, [rootId]: { title, shortDesc: 'Корень темы', content: `# ${title}\n` } }));
+    changeTree(treeId);
+    setSelectedId(rootId);
+    setDirty(true);
+  }, [pushHistory, setNodes, changeTree]);
+
+  // Fit the view to the newly selected tree.
+  useEffect(() => {
+    if (!loaded || !activeTreeId) return;
+    const t = setTimeout(() => rfRef.current?.fitView({ padding: 0.2, duration: 400 }), 60);
+    return () => clearTimeout(t);
+  }, [activeTreeId, loaded]);
 
   const duplicateSelected = useCallback(() => {
     const src = nodes.find((n) => n.id === selectedId);
@@ -306,7 +368,10 @@ export default function Editor() {
   }, [nodes, selectedId, concepts, setNodes, pushHistory]);
 
   const updateNodeData = useCallback(
-    (id: string, patch: Partial<{ title: string; desc: string; category: string; defaultExpanded: boolean }>) => {
+    (
+      id: string,
+      patch: Partial<{ title: string; desc: string; category: string; defaultExpanded: boolean; treeId: string }>
+    ) => {
       setNodes((nds) => nds.map((n) => (n.id === id ? { ...n, data: { ...n.data, ...patch } } : n)));
     },
     [setNodes]
@@ -413,6 +478,7 @@ export default function Editor() {
           title: String(n.data.title ?? ''),
           desc: String(n.data.desc ?? ''),
           category: String(n.data.category ?? 'core'),
+          treeId: String(n.data.treeId ?? trees[0]?.id ?? ''),
           ...(n.data.defaultExpanded ? { defaultExpanded: true } : {}),
         },
       })),
@@ -428,8 +494,9 @@ export default function Editor() {
           return [n.id, { title: c.title, shortDesc: c.shortDesc, content: c.content }];
         })
       ),
+      trees,
     };
-  }, [nodes, edges, concepts]);
+  }, [nodes, edges, concepts, trees]);
 
   const onSave = useCallback(async () => {
     if (identity && !user) {
@@ -457,6 +524,13 @@ export default function Editor() {
   const selectedEdge = edges.find((e) => e.id === selectedEdgeId) ?? null;
   const nodeTitle = (id: string) => String(nodes.find((n) => n.id === id)?.data.title ?? id);
 
+  // Show only the active tree on the canvas (nodes of other trees live in the
+  // same state but are hidden, so their coordinates don't overlap the view).
+  const inActiveTree = (n: Node) => (n.data.treeId ?? activeTreeId) === activeTreeId;
+  const activeIds = new Set(nodes.filter(inActiveTree).map((n) => n.id));
+  const displayNodes = nodes.map((n) => ({ ...n, hidden: !inActiveTree(n) }));
+  const displayEdges = edges.map((e) => ({ ...e, hidden: !(activeIds.has(e.source) && activeIds.has(e.target)) }));
+
   const toolBtn =
     'flex items-center gap-1 rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-200 disabled:opacity-40 disabled:hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600';
   const inputCls =
@@ -467,7 +541,23 @@ export default function Editor() {
       {/* Toolbar */}
       <header className="z-10 flex flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-slate-700 dark:bg-slate-800">
         <MapIcon className="h-5 w-5 text-blue-500" />
-        <span className="mr-2 font-semibold text-slate-800 dark:text-slate-100">Редактор карты</span>
+        <span className="mr-1 font-semibold text-slate-800 dark:text-slate-100">Редактор</span>
+        <select
+          value={activeTreeId}
+          onChange={(e) => changeTree(e.target.value)}
+          title="Тема (дерево)"
+          className="rounded-lg border border-slate-200 bg-slate-100 px-2 py-1.5 text-sm text-slate-700 outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
+        >
+          {trees.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.title}
+            </option>
+          ))}
+        </select>
+        <button onClick={createTree} className={toolBtn} title="Создать новую тему">
+          <Plus className="h-4 w-4" /> Тема
+        </button>
+        <span className="mx-1 h-5 w-px bg-slate-200 dark:bg-slate-600" />
         <button onClick={addNode} className={toolBtn}>
           <Plus className="h-4 w-4" /> Узел
         </button>
@@ -538,8 +628,8 @@ export default function Editor() {
             </div>
           )}
           <ReactFlow
-            nodes={nodes}
-            edges={edges}
+            nodes={displayNodes}
+            edges={displayEdges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
@@ -549,6 +639,7 @@ export default function Editor() {
             onNodeDragStart={pushHistory}
             onBeforeDelete={onBeforeDelete}
             onNodesDelete={onNodesDelete}
+            onInit={(inst) => (rfRef.current = inst)}
             onPaneClick={() => {
               setSelectedId(null);
               setSelectedEdgeId(null);
@@ -700,6 +791,25 @@ export default function Editor() {
                   </select>
                 </Field>
 
+                {trees.length > 1 && (
+                  <Field label="Тема (дерево)">
+                    <select
+                      value={String(selectedNode.data.treeId ?? activeTreeId)}
+                      onChange={(e) => {
+                        pushHistory();
+                        updateNodeData(selectedNode.id, { treeId: e.target.value });
+                      }}
+                      className={inputCls}
+                    >
+                      {trees.map((t) => (
+                        <option key={t.id} value={t.id}>
+                          {t.title}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+                )}
+
                 <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
                   <input
                     type="checkbox"
@@ -747,6 +857,8 @@ export default function Editor() {
                     <MarkdownView
                       content={selectedConcept?.content ?? ''}
                       onNodeLink={(id) => {
+                        const t = nodes.find((n) => n.id === id)?.data.treeId;
+                        if (t && t !== activeTreeId) changeTree(String(t));
                         setSelectedId(id);
                         setSelectedEdgeId(null);
                       }}

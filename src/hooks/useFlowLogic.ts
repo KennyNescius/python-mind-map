@@ -14,7 +14,7 @@ const getDirection = (source: Node, target: Node) => {
 // Initial expanded directions: derived from nodes flagged data.defaultExpanded
 // (plus 'start'). For each such node we open the directions toward its children
 // AND the path from 'start' down to it, so the branch is actually visible.
-function computeInitialExpanded(nodes: Node[], edges: Edge[]): Set<string> {
+function computeInitialExpanded(nodes: Node[], edges: Edge[], rootId: string): Set<string> {
   const byId = new Map(nodes.map((n) => [n.id, n]));
   const expanded = new Set<string>();
 
@@ -42,9 +42,9 @@ function computeInitialExpanded(nodes: Node[], edges: Edge[]): Set<string> {
   };
 
   const flagged = nodes.filter((n) => n.data?.defaultExpanded);
-  const roots = flagged.length ? flagged.map((n) => n.id) : ['start'];
-  // 'start' always opens its own children so the map is never empty.
-  openChildren('start');
+  const roots = flagged.length ? flagged.map((n) => n.id) : [rootId];
+  // The tree root always opens its own children so the map is never empty.
+  openChildren(rootId);
   for (const id of roots) {
     openChildren(id);
     openPathFromStart(id);
@@ -70,7 +70,12 @@ function pathDirsToNode(nodeId: string, nodes: Node[], edges: Edge[]): string[] 
   return dirs;
 }
 
-export function useFlowLogic(initialPythonNodes: Node[], initialPythonEdges: Edge[], initialFlowEdges: Edge[]) {
+export function useFlowLogic(
+  initialPythonNodes: Node[],
+  initialPythonEdges: Edge[],
+  initialFlowEdges: Edge[],
+  rootId: string = 'start'
+) {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialPythonNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialFlowEdges);
   
@@ -79,7 +84,7 @@ export function useFlowLogic(initialPythonNodes: Node[], initialPythonEdges: Edg
   // Initially expanded directions come from nodes flagged defaultExpanded
   // (fallback: just 'start').
   const [expandedNodeDirs, setExpandedNodeDirs] = useState<Set<string>>(() =>
-    computeInitialExpanded(initialPythonNodes, initialPythonEdges)
+    computeInitialExpanded(initialPythonNodes, initialPythonEdges, rootId)
   );
 
   // Compute directions and expandable directions only once when nodes/edges are initialized
@@ -145,7 +150,7 @@ export function useFlowLogic(initialPythonNodes: Node[], initialPythonEdges: Edg
     }
 
     const visibleNodes = new Set<string>();
-    const queue = ['start'];
+    const queue = [rootId];
     while (queue.length > 0) {
       const current = queue.shift()!;
       visibleNodes.add(current);
