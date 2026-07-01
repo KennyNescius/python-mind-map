@@ -3,25 +3,27 @@
     {
       "id": "start",
       "position": {
-        "x": 0,
-        "y": 0
+        "x": 68,
+        "y": -28
       },
       "data": {
         "title": "Основы Python",
         "desc": "С чего начинается путь",
-        "category": "core"
+        "category": "core",
+        "treeId": "basics"
       }
     },
     {
       "id": "types",
       "position": {
-        "x": -350,
-        "y": 0
+        "x": -358,
+        "y": 1
       },
       "data": {
         "title": "Типы данных и Переменные",
         "desc": "Базовые кирпичики",
-        "category": "types"
+        "category": "types",
+        "treeId": "basics"
       }
     },
     {
@@ -33,7 +35,8 @@
       "data": {
         "title": "Числа",
         "desc": "int, float, complex",
-        "category": "types"
+        "category": "types",
+        "treeId": "basics"
       }
     },
     {
@@ -45,7 +48,8 @@
       "data": {
         "title": "Строки",
         "desc": "Текст (str)",
-        "category": "types"
+        "category": "types",
+        "treeId": "basics"
       }
     },
     {
@@ -57,7 +61,8 @@
       "data": {
         "title": "Логические",
         "desc": "True / False (bool)",
-        "category": "types"
+        "category": "types",
+        "treeId": "basics"
       }
     },
     {
@@ -69,7 +74,8 @@
       "data": {
         "title": "Коллекции",
         "desc": "Хранение данных",
-        "category": "collections"
+        "category": "collections",
+        "treeId": "basics"
       }
     },
     {
@@ -81,7 +87,8 @@
       "data": {
         "title": "Управление потоком",
         "desc": "Ветвления и циклы",
-        "category": "control"
+        "category": "control",
+        "treeId": "basics"
       }
     },
     {
@@ -93,7 +100,8 @@
       "data": {
         "title": "Условия (if/else)",
         "desc": "Выбор пути",
-        "category": "control"
+        "category": "control",
+        "treeId": "basics"
       }
     },
     {
@@ -105,7 +113,8 @@
       "data": {
         "title": "Циклы (for/while)",
         "desc": "Повторение действий",
-        "category": "control"
+        "category": "control",
+        "treeId": "basics"
       }
     },
     {
@@ -117,7 +126,8 @@
       "data": {
         "title": "Функции",
         "desc": "Повторно используемый код",
-        "category": "functions"
+        "category": "functions",
+        "treeId": "basics"
       }
     },
     {
@@ -129,7 +139,8 @@
       "data": {
         "title": "Определение (def)",
         "desc": "Создание своих функций",
-        "category": "functions"
+        "category": "functions",
+        "treeId": "basics"
       }
     },
     {
@@ -141,7 +152,8 @@
       "data": {
         "title": "Lambda функции",
         "desc": "Анонимные функции",
-        "category": "functions"
+        "category": "functions",
+        "treeId": "basics"
       }
     },
     {
@@ -153,7 +165,8 @@
       "data": {
         "title": "NoneType",
         "desc": "Ничего (None)",
-        "category": "types"
+        "category": "types",
+        "treeId": "basics"
       }
     },
     {
@@ -165,7 +178,8 @@
       "data": {
         "title": "Типизация",
         "desc": "Type Hinting",
-        "category": "types"
+        "category": "types",
+        "treeId": "basics"
       }
     },
     {
@@ -177,7 +191,8 @@
       "data": {
         "title": "Match-Case",
         "desc": "Сопоставление шаблонов",
-        "category": "control"
+        "category": "control",
+        "treeId": "basics"
       }
     },
     {
@@ -189,7 +204,8 @@
       "data": {
         "title": "Асинхронность",
         "desc": "async / await",
-        "category": "control"
+        "category": "control",
+        "treeId": "basics"
       }
     },
     {
@@ -201,7 +217,8 @@
       "data": {
         "title": "Декораторы",
         "desc": "Обертки для функций (@)",
-        "category": "functions"
+        "category": "functions",
+        "treeId": "basics"
       }
     },
     {
@@ -213,7 +230,8 @@
       "data": {
         "title": "Генераторы",
         "desc": "yield и Итераторы",
-        "category": "functions"
+        "category": "functions",
+        "treeId": "basics"
       }
     },
     {
@@ -225,7 +243,8 @@
       "data": {
         "title": "ООП",
         "desc": "Объекты и классы",
-        "category": "oop"
+        "category": "oop",
+        "treeId": "basics"
       }
     },
     {
@@ -237,7 +256,8 @@
       "data": {
         "title": "Классы (class)",
         "desc": "Шаблоны объектов",
-        "category": "oop"
+        "category": "oop",
+        "treeId": "basics"
       }
     },
     {
@@ -249,7 +269,8 @@
       "data": {
         "title": "Методы (self)",
         "desc": "Функции внутри классов",
-        "category": "oop"
+        "category": "oop",
+        "treeId": "basics"
       }
     },
     {
@@ -261,7 +282,8 @@
       "data": {
         "title": "Наследование",
         "desc": "Переиспользование классов",
-        "category": "oop"
+        "category": "oop",
+        "treeId": "basics"
       }
     },
     {
@@ -273,7 +295,8 @@
       "data": {
         "title": "Модули",
         "desc": "Организация кода",
-        "category": "modules"
+        "category": "modules",
+        "treeId": "basics"
       }
     },
     {
@@ -285,7 +308,8 @@
       "data": {
         "title": "Импорт (import)",
         "desc": "Подключение чужого кода",
-        "category": "modules"
+        "category": "modules",
+        "treeId": "basics"
       }
     },
     {
@@ -297,7 +321,8 @@
       "data": {
         "title": "Менеджер pip",
         "desc": "Сторонние библиотеки",
-        "category": "modules"
+        "category": "modules",
+        "treeId": "basics"
       }
     },
     {
@@ -309,7 +334,8 @@
       "data": {
         "title": "Пакеты",
         "desc": "Множество модулей",
-        "category": "modules"
+        "category": "modules",
+        "treeId": "basics"
       }
     },
     {
@@ -321,7 +347,8 @@
       "data": {
         "title": "Виртуальное окружение",
         "desc": "Изоляция (venv)",
-        "category": "modules"
+        "category": "modules",
+        "treeId": "basics"
       }
     },
     {
@@ -333,7 +360,8 @@
       "data": {
         "title": "Тестирование",
         "desc": "pytest / unittest",
-        "category": "modules"
+        "category": "modules",
+        "treeId": "basics"
       }
     },
     {
@@ -345,7 +373,8 @@
       "data": {
         "title": "Ошибки",
         "desc": "Обработка исключений",
-        "category": "errors"
+        "category": "errors",
+        "treeId": "basics"
       }
     },
     {
@@ -357,7 +386,8 @@
       "data": {
         "title": "Try / Except",
         "desc": "Ловля ошибок",
-        "category": "errors"
+        "category": "errors",
+        "treeId": "basics"
       }
     },
     {
@@ -369,7 +399,8 @@
       "data": {
         "title": "Вызов (raise)",
         "desc": "Ручной выброс ошибок",
-        "category": "errors"
+        "category": "errors",
+        "treeId": "basics"
       }
     },
     {
@@ -381,7 +412,8 @@
       "data": {
         "title": "Finally / Else",
         "desc": "Дополнительные блоки",
-        "category": "errors"
+        "category": "errors",
+        "treeId": "basics"
       }
     },
     {
@@ -393,7 +425,8 @@
       "data": {
         "title": "Файлы",
         "desc": "Работа с системой",
-        "category": "files"
+        "category": "files",
+        "treeId": "basics"
       }
     },
     {
@@ -405,7 +438,8 @@
       "data": {
         "title": "Чтение / Запись",
         "desc": "Функция open()",
-        "category": "files"
+        "category": "files",
+        "treeId": "basics"
       }
     },
     {
@@ -417,7 +451,8 @@
       "data": {
         "title": "Контекст (with)",
         "desc": "Менеджеры контекста",
-        "category": "files"
+        "category": "files",
+        "treeId": "basics"
       }
     },
     {
@@ -429,7 +464,22 @@
       "data": {
         "title": "Новый узел",
         "desc": "Описание",
-        "category": "collections"
+        "category": "collections",
+        "treeId": "basics"
+      }
+    },
+    {
+      "id": "node-mr1vh0m0-wo",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "data": {
+        "title": "Анализ",
+        "desc": "Анализ данных на пайтоне",
+        "category": "core",
+        "treeId": "tree-mr1vh0m0",
+        "defaultExpanded": true
       }
     }
   ],
@@ -798,6 +848,23 @@
       "title": "Новый узел",
       "shortDesc": "Описание",
       "content": "# Новый узел\n"
+    },
+    "node-mr1vh0m0-wo": {
+      "title": "Анализ",
+      "shortDesc": "Анализ данных на пайтоне",
+      "content": "# Анализ\n"
     }
-  }
+  },
+  "trees": [
+    {
+      "id": "basics",
+      "title": "Основы Python",
+      "rootId": "start"
+    },
+    {
+      "id": "tree-mr1vh0m0",
+      "title": "Анализ",
+      "rootId": "node-mr1vh0m0-wo"
+    }
+  ]
 }
