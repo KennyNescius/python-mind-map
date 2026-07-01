@@ -21,11 +21,43 @@ const codeBlockStyle: React.CSSProperties = {
 
 /** Renders markdown with syntax-highlighted code blocks. Shared by the
  *  read-only Sidebar and the editor's live preview. */
-export default function MarkdownView({ content }: { content: string }) {
+export default function MarkdownView({
+  content,
+  onNodeLink,
+}: {
+  content: string;
+  onNodeLink?: (id: string) => void;
+}) {
   return (
     <div className="prose prose-slate prose-sm sm:prose-base max-w-none">
       <ReactMarkdown
+        // Keep our custom `node:` scheme (default sanitizer would strip it).
+        urlTransform={(url) => url}
         components={{
+          a(props: any) {
+            const { href, children, node, ...rest } = props;
+            if (typeof href === 'string' && href.startsWith('node:')) {
+              const id = href.slice('node:'.length);
+              return (
+                <a
+                  {...rest}
+                  href={href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onNodeLink?.(id);
+                  }}
+                  className="cursor-pointer font-medium text-blue-600 underline decoration-dotted underline-offset-2 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                >
+                  {children}
+                </a>
+              );
+            }
+            return (
+              <a {...rest} href={href} target="_blank" rel="noopener noreferrer">
+                {children}
+              </a>
+            );
+          },
           code(props: any) {
             const { children, className, node, ...rest } = props;
             const match = /language-(\w+)/.exec(className || '');
