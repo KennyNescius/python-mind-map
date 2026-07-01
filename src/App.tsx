@@ -16,7 +16,9 @@ import ThemeToggle from './components/ThemeToggle';
 import {
   Concept,
   ContentData,
+  edgesOfTree,
   loadContent,
+  nodesOfTree,
   toConcepts,
   toFlowEdges,
   toFlowNodes,
@@ -24,6 +26,8 @@ import {
 } from './data/content';
 import { getTheme } from './data/theme';
 import { useFlowLogic } from './hooks/useFlowLogic';
+
+type RevealTarget = { id: string; nonce: number } | null;
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -33,10 +37,40 @@ const edgeTypes = {
   floating: FloatingEdge,
 };
 
-function MindMap({ content }: { content: ContentData }) {
-  const pythonNodes = React.useMemo(() => toFlowNodes(content.nodes), [content]);
-  const pythonEdges = React.useMemo(() => toPythonEdges(content.edges), [content]);
-  const initialEdges = React.useMemo(() => toFlowEdges(content.edges), [content]);
+function initialTree(content: ContentData): string {
+  const ids = new Set(content.trees.map((t) => t.id));
+  const url = new URLSearchParams(window.location.search).get('tree');
+  if (url && ids.has(url)) return url;
+  try {
+    const s = localStorage.getItem('activeTree');
+    if (s && ids.has(s)) return s;
+  } catch {
+    /* ignore */
+  }
+  return content.trees[0].id;
+}
+
+// One tree's canvas + sidebar. Remounted (via key) when the active tree changes
+// so React Flow / expansion state start fresh for the new tree.
+function TreeCanvas({
+  content,
+  treeId,
+  theme,
+  revealTarget,
+  onNavigate,
+}: {
+  content: ContentData;
+  treeId: string;
+  theme: string;
+  revealTarget: RevealTarget;
+  onNavigate: (id: string) => void;
+}) {
+  const tree = content.trees.find((t) => t.id === treeId) ?? content.trees[0];
+  const rawNodes = React.useMemo(() => nodesOfTree(content.nodes, treeId), [content, treeId]);
+  const rawEdges = React.useMemo(() => edgesOfTree(content.nodes, content.edges, treeId), [content, treeId]);
+  const pythonNodes = React.useMemo(() => toFlowNodes(rawNodes), [rawNodes]);
+  const pythonEdges = React.useMemo(() => toPythonEdges(rawEdges), [rawEdges]);
+  const initialEdges = React.useMemo(() => toFlowEdges(rawEdges), [rawEdges]);
   const conceptDetails = React.useMemo(() => toConcepts(content.concepts), [content]);
 
   const {
@@ -48,53 +82,33 @@ function MindMap({ content }: { content: ContentData }) {
     setSearchQuery,
     setNodes,
     revealNode,
-  } = useFlowLogic(pythonNodes, pythonEdges, initialEdges);
+  } = useFlowLogic(pythonNodes, pythonEdges, initialEdges, tree.rootId);
 
   const [selectedConcept, setSelectedConcept] = useState<Concept | null>(null);
-  const [theme, setTheme] = useState(getTheme());
   const rfRef = useRef<ReactFlowInstance | null>(null);
 
-  // Follow an in-text link to another node: open its topic, reveal it on the
-  // map (expand the path), select it, and center the viewport on it.
-  const goToNode = useCallback(
-    (id: string) => {
-      const concept = conceptDetails[id];
-      if (concept) setSelectedConcept(concept);
-      revealNode(id);
-      setNodes((nds) => nds.map((n) => ({ ...n, selected: n.id === id })));
-      const pos = content.nodes.find((n) => n.id === id)?.position;
-      if (pos) {
-        // Let the node become visible first, then center on it.
-        setTimeout(() => {
-          rfRef.current?.setCenter(pos.x + 110, pos.y + 30, { zoom: 0.9, duration: 600 });
-        }, 60);
-      }
-    },
-    [conceptDetails, revealNode, setNodes, content]
-  );
+  // Reveal + open a node when navigated to (in-text link / cross-tree jump).
+  useEffect(() => {
+    if (!revealTarget) return;
+    const concept = conceptDetails[revealTarget.id];
+    if (concept) setSelectedConcept(concept);
+    revealNode(revealTarget.id);
+    setNodes((nds) => nds.map((n) => ({ ...n, selected: n.id === revealTarget.id })));
+    const pos = content.nodes.find((n) => n.id === revealTarget.id)?.position;
+    if (pos) {
+      setTimeout(() => rfRef.current?.setCenter(pos.x + 110, pos.y + 30, { zoom: 0.9, duration: 600 }), 80);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [revealTarget]);
 
-  // Handle node click
   const onNodeClick: NodeMouseHandler = useCallback(
     (_, node) => {
       const concept = conceptDetails[node.id];
-      if (concept) {
-        setSelectedConcept(concept);
-      }
-
-      setNodes((nds) =>
-        nds.map((n) => ({
-          ...n,
-          selected: n.id === node.id,
-        }))
-      );
+      if (concept) setSelectedConcept(concept);
+      setNodes((nds) => nds.map((n) => ({ ...n, selected: n.id === node.id })));
     },
     [setNodes, conceptDetails]
   );
-
-  // Handle search highlighting
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
 
   const closeSidebar = useCallback(() => {
     setSelectedConcept(null);
@@ -102,8 +116,8 @@ function MindMap({ content }: { content: ContentData }) {
   }, [setNodes]);
 
   return (
-    <div className="flex flex-col h-screen w-full bg-slate-50 dark:bg-slate-900 font-sans relative overflow-hidden">
-      {/* Search Header */}
+    <>
+      {/* Search */}
       <div className="absolute top-4 left-4 z-10 w-[90%] max-w-[320px]">
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl flex items-center px-4 py-3 border border-slate-100 dark:border-slate-700">
           <MapIcon className="w-6 h-6 text-blue-500 mr-3" />
@@ -115,16 +129,9 @@ function MindMap({ content }: { content: ContentData }) {
               placeholder="Поиск по карте..."
               className="w-full pl-8 pr-2 outline-none text-sm text-slate-700 dark:text-slate-200 bg-transparent placeholder:text-slate-400"
               value={searchQuery}
-              onChange={handleSearch}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-        </div>
-      </div>
-
-      {/* Theme toggle */}
-      <div className="absolute top-4 right-4 z-10">
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700">
-          <ThemeToggle onChange={setTheme} />
         </div>
       </div>
 
@@ -155,7 +162,72 @@ function MindMap({ content }: { content: ContentData }) {
       </div>
 
       {/* Detail Sidebar */}
-      <Sidebar concept={selectedConcept} onClose={closeSidebar} onNodeLink={goToNode} />
+      <Sidebar concept={selectedConcept} onClose={closeSidebar} onNodeLink={onNavigate} />
+    </>
+  );
+}
+
+function MindMap({ content }: { content: ContentData }) {
+  const [theme, setTheme] = useState(getTheme());
+  const [activeTreeId, setActiveTreeId] = useState(() => initialTree(content));
+  const [revealTarget, setRevealTarget] = useState<RevealTarget>(null);
+  const nonceRef = useRef(0);
+
+  const changeTree = useCallback((id: string) => {
+    setActiveTreeId(id);
+    setRevealTarget(null);
+    try {
+      localStorage.setItem('activeTree', id);
+    } catch {
+      /* ignore */
+    }
+    const url = new URL(window.location.href);
+    url.searchParams.set('tree', id);
+    history.replaceState(null, '', url.toString());
+  }, []);
+
+  // In-text link: switch to the target node's tree (if needed) and reveal it.
+  const onNavigate = useCallback(
+    (nodeId: string) => {
+      const n = content.nodes.find((x) => x.id === nodeId);
+      if (!n) return;
+      changeTree(n.data.treeId ?? content.trees[0].id);
+      setRevealTarget({ id: nodeId, nonce: (nonceRef.current += 1) });
+    },
+    [content, changeTree]
+  );
+
+  return (
+    <div className="flex flex-col h-screen w-full bg-slate-50 dark:bg-slate-900 font-sans relative overflow-hidden">
+      {/* Tree switcher + theme */}
+      <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+        {content.trees.length > 1 && (
+          <select
+            value={activeTreeId}
+            onChange={(e) => changeTree(e.target.value)}
+            title="Тема"
+            className="rounded-xl border border-slate-100 bg-white px-3 py-2 text-sm text-slate-700 shadow-xl outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+          >
+            {content.trees.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.title}
+              </option>
+            ))}
+          </select>
+        )}
+        <div className="rounded-xl border border-slate-100 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+          <ThemeToggle onChange={setTheme} />
+        </div>
+      </div>
+
+      <TreeCanvas
+        key={activeTreeId}
+        content={content}
+        treeId={activeTreeId}
+        theme={theme}
+        revealTarget={revealTarget}
+        onNavigate={onNavigate}
+      />
     </div>
   );
 }
