@@ -13,19 +13,32 @@ export type Concept = {
   content: string;
 };
 
-/** Categories drive node colors (see CustomNode). Keep in sync with the
- *  keys in CustomNode's categoryColors map. */
-export const CATEGORIES = [
-  'core',
-  'types',
-  'collections',
-  'control',
-  'functions',
-  'oop',
-  'modules',
-  'errors',
-  'files',
-] as const;
+/** A category is a color label for nodes; `node.data.category` holds its id. */
+export interface Category {
+  id: string;
+  title: string;
+  color: string; // hex, e.g. "#10b981"
+}
+
+/** Seed categories used when content has none yet (matches the old palette). */
+export const DEFAULT_CATEGORIES: Category[] = [
+  { id: 'core', title: 'Основы', color: '#10b981' },
+  { id: 'types', title: 'Типы', color: '#0ea5e9' },
+  { id: 'collections', title: 'Коллекции', color: '#8b5cf6' },
+  { id: 'control', title: 'Управление', color: '#f59e0b' },
+  { id: 'functions', title: 'Функции', color: '#f43f5e' },
+  { id: 'oop', title: 'ООП', color: '#6366f1' },
+  { id: 'modules', title: 'Модули', color: '#06b6d4' },
+  { id: 'errors', title: 'Ошибки', color: '#ef4444' },
+  { id: 'files', title: 'Файлы', color: '#f97316' },
+];
+
+/** id -> hex color lookup for rendering. */
+export function colorMapOf(categories: Category[]): Record<string, string> {
+  const m: Record<string, string> = {};
+  for (const c of categories) m[c.id] = c.color;
+  return m;
+}
 
 export interface RawNode {
   id: string;
@@ -52,6 +65,7 @@ export interface ContentData {
   edges: RawEdge[];
   concepts: Record<string, { title: string; shortDesc: string; content: string }>;
   trees: Tree[];
+  categories: Category[];
 }
 
 export const DEFAULT_TREE_ID = 'basics';
@@ -76,12 +90,14 @@ export function normalizeContent(raw: Partial<ContentData>): ContentData {
   if (!trees.length) {
     trees = [{ id: DEFAULT_TREE_ID, title: 'Основы Python', rootId: findRootId(nodes, edges) }];
   }
+  const categories: Category[] =
+    Array.isArray(raw.categories) && raw.categories.length ? raw.categories : DEFAULT_CATEGORIES;
   const fallbackTree = trees[0].id;
   const normNodes = nodes.map((n) => ({
     ...n,
     data: { ...n.data, treeId: n.data.treeId ?? fallbackTree },
   }));
-  return { nodes: normNodes, edges, concepts, trees };
+  return { nodes: normNodes, edges, concepts, trees, categories };
 }
 
 /** Nodes belonging to a tree, and the edges whose endpoints are both in it. */

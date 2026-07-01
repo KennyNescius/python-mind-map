@@ -13,7 +13,9 @@ import CustomNode from './components/CustomNode';
 import Sidebar from './components/Sidebar';
 import FloatingEdge from './components/FloatingEdge';
 import ThemeToggle from './components/ThemeToggle';
+import { CategoryColorContext } from './components/CategoryContext';
 import {
+  colorMapOf,
   Concept,
   ContentData,
   edgesOfTree,
@@ -197,7 +199,10 @@ function MindMap({ content }: { content: ContentData }) {
     [content, changeTree]
   );
 
+  const colorMap = React.useMemo(() => colorMapOf(content.categories), [content]);
+
   return (
+    <CategoryColorContext.Provider value={colorMap}>
     <div className="flex flex-col h-screen w-full bg-slate-50 dark:bg-slate-900 font-sans relative overflow-hidden">
       {/* Tree switcher + theme */}
       <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
@@ -229,6 +234,7 @@ function MindMap({ content }: { content: ContentData }) {
         onNavigate={onNavigate}
       />
     </div>
+    </CategoryColorContext.Provider>
   );
 }
 

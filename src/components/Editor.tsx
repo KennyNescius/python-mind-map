@@ -24,6 +24,7 @@ import {
   LogIn,
   LogOut,
   Map as MapIcon,
+  Palette,
   Plus,
   Redo2,
   Save,
@@ -36,13 +37,15 @@ import FloatingEdge from './FloatingEdge';
 import MarkdownView from './MarkdownView';
 import ThemeToggle from './ThemeToggle';
 import {
-  CATEGORIES,
+  Category,
+  colorMapOf,
   ContentData,
   loadContent,
   toFlowEdges,
   toFlowNodes,
   Tree,
 } from '../data/content';
+import { CategoryColorContext } from './CategoryContext';
 import { downloadContent, saveContent } from '../data/save';
 import { IdentityUser, loadIdentity, NetlifyIdentity } from '../data/identity';
 import { getTheme } from '../data/theme';
@@ -82,6 +85,8 @@ export default function Editor() {
   const [concepts, setConcepts] = useState<ConceptMap>({});
   const [trees, setTrees] = useState<Tree[]>([]);
   const [activeTreeId, setActiveTreeId] = useState<string>('');
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [showCats, setShowCats] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -175,6 +180,7 @@ export default function Editor() {
         for (const [id, c] of Object.entries(content.concepts)) cm[id] = { ...c };
         setConcepts(cm);
         setTrees(content.trees);
+        setCategories(content.categories);
         let initial = content.trees[0]?.id ?? '';
         try {
           const s = localStorage.getItem('activeTree');
@@ -299,13 +305,19 @@ export default function Editor() {
       id,
       type: 'customNode',
       position: { x: Math.round((Math.random() - 0.5) * 200), y: Math.round((Math.random() - 0.5) * 200) },
-      data: { title: 'Новый узел', desc: 'Описание', category: 'core', editable: true, treeId: activeTreeId },
+      data: {
+        title: 'Новый узел',
+        desc: 'Описание',
+        category: categories[0]?.id ?? 'core',
+        editable: true,
+        treeId: activeTreeId,
+      },
     };
     setNodes((nds) => [...nds, newNode]);
     setConcepts((prev) => ({ ...prev, [id]: { title: 'Новый узел', shortDesc: 'Описание', content: '# Новый узел\n' } }));
     setSelectedId(id);
     setSelectedEdgeId(null);
-  }, [setNodes, pushHistory, activeTreeId]);
+  }, [setNodes, pushHistory, activeTreeId, categories]);
 
   const changeTree = useCallback((id: string) => {
     setActiveTreeId(id);
@@ -328,7 +340,14 @@ export default function Editor() {
       id: rootId,
       type: 'customNode',
       position: { x: 0, y: 0 },
-      data: { title, desc: 'Корень темы', category: 'core', editable: true, treeId, defaultExpanded: true },
+      data: {
+        title,
+        desc: 'Корень темы',
+        category: categories[0]?.id ?? 'core',
+        editable: true,
+        treeId,
+        defaultExpanded: true,
+      },
     };
     setTrees((ts) => [...ts, { id: treeId, title, rootId }]);
     setNodes((nds) => [...nds, rootNode]);
@@ -336,7 +355,7 @@ export default function Editor() {
     changeTree(treeId);
     setSelectedId(rootId);
     setDirty(true);
-  }, [pushHistory, setNodes, changeTree]);
+  }, [pushHistory, setNodes, changeTree, categories]);
 
   // Fit the view to the newly selected tree.
   useEffect(() => {
@@ -344,6 +363,26 @@ export default function Editor() {
     const t = setTimeout(() => rfRef.current?.fitView({ padding: 0.2, duration: 400 }), 60);
     return () => clearTimeout(t);
   }, [activeTreeId, loaded]);
+
+  const colorMap = React.useMemo(() => colorMapOf(categories), [categories]);
+
+  const addCategory = useCallback(() => {
+    const title = window.prompt('Название категории:')?.trim();
+    if (!title) return;
+    setCategories((cs) => [...cs, { id: `cat-${Date.now().toString(36)}`, title, color: '#64748b' }]);
+    setDirty(true);
+  }, []);
+
+  const updateCategory = useCallback((id: string, patch: Partial<Category>) => {
+    setCategories((cs) => cs.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+    setDirty(true);
+  }, []);
+
+  const deleteCategory = useCallback((id: string) => {
+    if (!window.confirm('Удалить категорию? Узлы этой категории станут серыми.')) return;
+    setCategories((cs) => cs.filter((c) => c.id !== id));
+    setDirty(true);
+  }, []);
 
   const duplicateSelected = useCallback(() => {
     const src = nodes.find((n) => n.id === selectedId);
@@ -495,8 +534,9 @@ export default function Editor() {
         })
       ),
       trees,
+      categories,
     };
-  }, [nodes, edges, concepts, trees]);
+  }, [nodes, edges, concepts, trees, categories]);
 
   const onSave = useCallback(async () => {
     if (identity && !user) {
@@ -561,6 +601,9 @@ export default function Editor() {
         <button onClick={addNode} className={toolBtn}>
           <Plus className="h-4 w-4" /> Узел
         </button>
+        <button onClick={() => setShowCats((v) => !v)} className={toolBtn} title="Категории и цвета">
+          <Palette className="h-4 w-4" /> Категории
+        </button>
         <button onClick={undo} disabled={!past.length} className={toolBtn} title="Отменить (Ctrl+Z)">
           <Undo2 className="h-4 w-4" />
         </button>
@@ -619,6 +662,45 @@ export default function Editor() {
         </div>
       )}
 
+      {showCats && (
+        <div className="absolute left-4 top-24 z-30 w-[320px] rounded-xl border border-slate-200 bg-white p-3 shadow-2xl dark:border-slate-700 dark:bg-slate-800">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">Категории</span>
+            <button
+              onClick={addCategory}
+              className="flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600"
+            >
+              <Plus className="h-3.5 w-3.5" /> Добавить
+            </button>
+          </div>
+          <div className="flex max-h-[50vh] flex-col gap-2 overflow-y-auto custom-scrollbar">
+            {categories.map((c) => (
+              <div key={c.id} className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={c.color}
+                  onChange={(e) => updateCategory(c.id, { color: e.target.value })}
+                  className="h-7 w-8 shrink-0 cursor-pointer rounded border border-slate-200 bg-transparent dark:border-slate-600"
+                  title="Цвет"
+                />
+                <input
+                  value={c.title}
+                  onChange={(e) => updateCategory(c.id, { title: e.target.value })}
+                  className="min-w-0 flex-1 rounded-lg border border-slate-200 px-2 py-1 text-sm outline-none focus:border-blue-400 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
+                />
+                <button
+                  onClick={() => deleteCategory(c.id)}
+                  className="shrink-0 rounded p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
+                  title="Удалить"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="flex min-h-0 flex-1">
         {/* Canvas */}
         <div className="relative min-w-0 flex-1">
@@ -627,6 +709,7 @@ export default function Editor() {
               Загрузка…
             </div>
           )}
+          <CategoryColorContext.Provider value={colorMap}>
           <ReactFlow
             nodes={displayNodes}
             edges={displayEdges}
@@ -660,6 +743,7 @@ export default function Editor() {
             />
             <Controls className="rounded-xl shadow-xl" />
           </ReactFlow>
+          </CategoryColorContext.Provider>
         </div>
 
         {/* Inspector */}
@@ -775,7 +859,7 @@ export default function Editor() {
 
                 <Field label="Категория (цвет)">
                   <select
-                    value={String(selectedNode.data.category ?? 'core')}
+                    value={String(selectedNode.data.category ?? categories[0]?.id ?? '')}
                     onFocus={beginFieldEdit}
                     onChange={(e) => {
                       commitPending();
@@ -783,9 +867,9 @@ export default function Editor() {
                     }}
                     className={inputCls}
                   >
-                    {CATEGORIES.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.title}
                       </option>
                     ))}
                   </select>
