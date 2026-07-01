@@ -6,9 +6,10 @@ import MarkdownView from './MarkdownView';
 interface SidebarProps {
   concept: Concept | null;
   onClose: () => void;
+  onNodeLink?: (id: string) => void;
 }
 
-export default function Sidebar({ concept, onClose }: SidebarProps) {
+export default function Sidebar({ concept, onClose, onNodeLink }: SidebarProps) {
   return (
     <div
       className={`fixed top-0 right-0 h-full w-full sm:w-[450px] bg-white dark:bg-slate-800 shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${
@@ -29,7 +30,7 @@ export default function Sidebar({ concept, onClose }: SidebarProps) {
 
       <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
         {concept ? (
-          <MarkdownView content={concept.content} />
+          <MarkdownView content={concept.content} onNodeLink={onNodeLink} />
         ) : (
           <div className="text-slate-400 text-center mt-10">Ничего не выбрано</div>
         )}

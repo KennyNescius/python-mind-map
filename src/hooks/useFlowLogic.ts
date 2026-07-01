@@ -52,6 +52,24 @@ function computeInitialExpanded(nodes: Node[], edges: Edge[]): Set<string> {
   return expanded;
 }
 
+// Directions (`parent:dir`) along the path from 'start' down to a node, so
+// expanding them makes that node visible.
+function pathDirsToNode(nodeId: string, nodes: Node[], edges: Edge[]): string[] {
+  const byId = new Map(nodes.map((n) => [n.id, n]));
+  const dirs: string[] = [];
+  let curr = nodeId;
+  let guard = 0;
+  let parentEdge = edges.find((e) => e.target === curr);
+  while (parentEdge && guard++ < nodes.length) {
+    const s = byId.get(parentEdge.source);
+    const t = byId.get(parentEdge.target);
+    if (s && t) dirs.push(`${parentEdge.source}:${getDirection(s, t)}`);
+    curr = parentEdge.source;
+    parentEdge = edges.find((e) => e.target === curr);
+  }
+  return dirs;
+}
+
 export function useFlowLogic(initialPythonNodes: Node[], initialPythonEdges: Edge[], initialFlowEdges: Edge[]) {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialPythonNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialFlowEdges);
@@ -198,6 +216,15 @@ export function useFlowLogic(initialPythonNodes: Node[], initialPythonEdges: Edg
     nodeExpandableDirs
   ]);
 
+  // Expand the path to a node so it becomes visible (used by in-text links).
+  const revealNode = useCallback(
+    (id: string) => {
+      const dirs = pathDirsToNode(id, initialPythonNodes, initialPythonEdges);
+      if (dirs.length) setExpandedNodeDirs((prev) => new Set([...prev, ...dirs]));
+    },
+    [initialPythonNodes, initialPythonEdges]
+  );
+
   return {
     nodes,
     edges,
@@ -205,6 +232,7 @@ export function useFlowLogic(initialPythonNodes: Node[], initialPythonEdges: Edg
     onEdgesChange,
     searchQuery,
     setSearchQuery,
-    setNodes
+    setNodes,
+    revealNode,
   };
 }

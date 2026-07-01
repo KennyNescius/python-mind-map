@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ReactFlow,
   Background,
   Controls,
   NodeMouseHandler,
   BackgroundVariant,
+  ReactFlowInstance,
 } from '@xyflow/react';
 import { Search, Map as MapIcon } from 'lucide-react';
 
@@ -46,10 +47,31 @@ function MindMap({ content }: { content: ContentData }) {
     searchQuery,
     setSearchQuery,
     setNodes,
+    revealNode,
   } = useFlowLogic(pythonNodes, pythonEdges, initialEdges);
 
   const [selectedConcept, setSelectedConcept] = useState<Concept | null>(null);
   const [theme, setTheme] = useState(getTheme());
+  const rfRef = useRef<ReactFlowInstance | null>(null);
+
+  // Follow an in-text link to another node: open its topic, reveal it on the
+  // map (expand the path), select it, and center the viewport on it.
+  const goToNode = useCallback(
+    (id: string) => {
+      const concept = conceptDetails[id];
+      if (concept) setSelectedConcept(concept);
+      revealNode(id);
+      setNodes((nds) => nds.map((n) => ({ ...n, selected: n.id === id })));
+      const pos = content.nodes.find((n) => n.id === id)?.position;
+      if (pos) {
+        // Let the node become visible first, then center on it.
+        setTimeout(() => {
+          rfRef.current?.setCenter(pos.x + 110, pos.y + 30, { zoom: 0.9, duration: 600 });
+        }, 60);
+      }
+    },
+    [conceptDetails, revealNode, setNodes, content]
+  );
 
   // Handle node click
   const onNodeClick: NodeMouseHandler = useCallback(
@@ -114,6 +136,7 @@ function MindMap({ content }: { content: ContentData }) {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onNodeClick={onNodeClick}
+          onInit={(inst) => (rfRef.current = inst)}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
           fitView
@@ -132,7 +155,7 @@ function MindMap({ content }: { content: ContentData }) {
       </div>
 
       {/* Detail Sidebar */}
-      <Sidebar concept={selectedConcept} onClose={closeSidebar} />
+      <Sidebar concept={selectedConcept} onClose={closeSidebar} onNodeLink={goToNode} />
     </div>
   );
 }

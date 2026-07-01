@@ -106,6 +106,8 @@ export default function Editor() {
     setDirty(true);
   }, [snapshot]);
 
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   // For text fields: capture a snapshot on focus, commit it to history on the
   // first change of that editing session.
   const pendingRef = useRef<Snapshot | null>(null);
@@ -318,6 +320,32 @@ export default function Editor() {
       }));
     },
     []
+  );
+
+  // Insert a `[Title](node:id)` link into the content at the caret.
+  const insertNodeLink = useCallback(
+    (targetId: string) => {
+      if (!selectedId) return;
+      const target = nodes.find((n) => n.id === targetId);
+      if (!target) return;
+      const snippet = `[${String(target.data.title ?? targetId)}](node:${targetId})`;
+      const ta = textareaRef.current;
+      const cur = concepts[selectedId]?.content ?? '';
+      const s = ta?.selectionStart ?? cur.length;
+      const e = ta?.selectionEnd ?? cur.length;
+      const next = cur.slice(0, s) + snippet + cur.slice(e);
+      pushHistory();
+      updateConcept(selectedId, { content: next });
+      setTimeout(() => {
+        const el = textareaRef.current;
+        if (el) {
+          el.focus();
+          const caret = s + snippet.length;
+          el.setSelectionRange(caret, caret);
+        }
+      }, 0);
+    },
+    [selectedId, nodes, concepts, updateConcept, pushHistory]
   );
 
   const deleteNode = useCallback(
@@ -684,22 +712,49 @@ export default function Editor() {
                   Раскрыт по умолчанию на карте
                 </label>
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                   <label className="text-xs font-medium text-slate-500 dark:text-slate-400">Контент (Markdown)</label>
-                  <button
-                    onClick={() => setShowPreview((v) => !v)}
-                    className="flex items-center gap-1 rounded px-2 py-1 text-xs text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700"
-                  >
-                    {showPreview ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                    {showPreview ? 'Скрыть превью' : 'Превью'}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <select
+                      value=""
+                      title="Вставить ссылку на другой узел"
+                      onChange={(e) => {
+                        if (e.target.value) insertNodeLink(e.target.value);
+                        e.target.value = '';
+                      }}
+                      className="max-w-[150px] rounded border border-slate-200 px-2 py-1 text-xs text-slate-600 outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
+                    >
+                      <option value="">🔗 Ссылка на узел…</option>
+                      {nodes
+                        .filter((n) => n.id !== selectedNode.id)
+                        .map((n) => (
+                          <option key={n.id} value={n.id}>
+                            {String(n.data.title ?? n.id)}
+                          </option>
+                        ))}
+                    </select>
+                    <button
+                      onClick={() => setShowPreview((v) => !v)}
+                      className="flex items-center gap-1 rounded px-2 py-1 text-xs text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700"
+                    >
+                      {showPreview ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                      {showPreview ? 'Скрыть превью' : 'Превью'}
+                    </button>
+                  </div>
                 </div>
                 {showPreview ? (
                   <div className="min-h-[200px] rounded-lg border border-slate-200 p-3 dark:border-slate-600">
-                    <MarkdownView content={selectedConcept?.content ?? ''} />
+                    <MarkdownView
+                      content={selectedConcept?.content ?? ''}
+                      onNodeLink={(id) => {
+                        setSelectedId(id);
+                        setSelectedEdgeId(null);
+                      }}
+                    />
                   </div>
                 ) : (
                   <textarea
+                    ref={textareaRef}
                     value={selectedConcept?.content ?? ''}
                     onFocus={beginFieldEdit}
                     onChange={(e) => {
