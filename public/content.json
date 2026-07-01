@@ -16,51 +16,12 @@
     {
       "id": "types",
       "position": {
-        "x": -358,
-        "y": 1
+        "x": -640,
+        "y": 22
       },
       "data": {
         "title": "Типы данных и Переменные",
         "desc": "Базовые кирпичики",
-        "category": "types",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "numbers",
-      "position": {
-        "x": -650,
-        "y": -100
-      },
-      "data": {
-        "title": "Числа",
-        "desc": "int, float, complex",
-        "category": "types",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "strings",
-      "position": {
-        "x": -650,
-        "y": 0
-      },
-      "data": {
-        "title": "Строки",
-        "desc": "Текст (str)",
-        "category": "types",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "booleans",
-      "position": {
-        "x": -650,
-        "y": 100
-      },
-      "data": {
-        "title": "Логические",
-        "desc": "True / False (bool)",
         "category": "types",
         "treeId": "basics"
       }
@@ -81,8 +42,8 @@
     {
       "id": "control",
       "position": {
-        "x": 0,
-        "y": -250
+        "x": 21,
+        "y": -303
       },
       "data": {
         "title": "Управление потоком",
@@ -94,8 +55,8 @@
     {
       "id": "if_else",
       "position": {
-        "x": -139,
-        "y": -559
+        "x": -128,
+        "y": -622
       },
       "data": {
         "title": "Условия (if/else)",
@@ -107,8 +68,8 @@
     {
       "id": "loops",
       "position": {
-        "x": 116,
-        "y": -567
+        "x": 129,
+        "y": -593
       },
       "data": {
         "title": "Циклы (for/while)",
@@ -120,8 +81,8 @@
     {
       "id": "functions",
       "position": {
-        "x": 0,
-        "y": 250
+        "x": 2,
+        "y": 494
       },
       "data": {
         "title": "Функции",
@@ -131,62 +92,10 @@
       }
     },
     {
-      "id": "def",
-      "position": {
-        "x": -150,
-        "y": 450
-      },
-      "data": {
-        "title": "Определение (def)",
-        "desc": "Создание своих функций",
-        "category": "functions",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "lambda",
-      "position": {
-        "x": 150,
-        "y": 450
-      },
-      "data": {
-        "title": "Lambda функции",
-        "desc": "Анонимные функции",
-        "category": "functions",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "none",
-      "position": {
-        "x": -650,
-        "y": 200
-      },
-      "data": {
-        "title": "NoneType",
-        "desc": "Ничего (None)",
-        "category": "types",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "typing",
-      "position": {
-        "x": -650,
-        "y": 300
-      },
-      "data": {
-        "title": "Типизация",
-        "desc": "Type Hinting",
-        "category": "types",
-        "treeId": "basics"
-      }
-    },
-    {
       "id": "match",
       "position": {
-        "x": -24,
-        "y": -666
+        "x": 1,
+        "y": -733
       },
       "data": {
         "title": "Match-Case",
@@ -198,39 +107,13 @@
     {
       "id": "async",
       "position": {
-        "x": 213,
-        "y": -458
+        "x": -325,
+        "y": -704
       },
       "data": {
         "title": "Асинхронность",
         "desc": "async / await",
         "category": "control",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "decorators",
-      "position": {
-        "x": 300,
-        "y": 450
-      },
-      "data": {
-        "title": "Декораторы",
-        "desc": "Обертки для функций (@)",
-        "category": "functions",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "generators",
-      "position": {
-        "x": -300,
-        "y": 450
-      },
-      "data": {
-        "title": "Генераторы",
-        "desc": "yield и Итераторы",
-        "category": "functions",
         "treeId": "basics"
       }
     },
@@ -250,8 +133,8 @@
     {
       "id": "classes",
       "position": {
-        "x": -450,
-        "y": -400
+        "x": -605,
+        "y": -456
       },
       "data": {
         "title": "Классы (class)",
@@ -263,8 +146,8 @@
     {
       "id": "methods",
       "position": {
-        "x": -500,
-        "y": -250
+        "x": -672,
+        "y": -338
       },
       "data": {
         "title": "Методы (self)",
@@ -276,8 +159,8 @@
     {
       "id": "inheritance",
       "position": {
-        "x": -300,
-        "y": -450
+        "x": -474,
+        "y": -559
       },
       "data": {
         "title": "Наследование",
@@ -300,75 +183,10 @@
       }
     },
     {
-      "id": "import",
-      "position": {
-        "x": 595,
-        "y": -549
-      },
-      "data": {
-        "title": "Импорт (import)",
-        "desc": "Подключение чужого кода",
-        "category": "modules",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "pip",
-      "position": {
-        "x": 761,
-        "y": -431
-      },
-      "data": {
-        "title": "Менеджер pip",
-        "desc": "Сторонние библиотеки",
-        "category": "modules",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "packages",
-      "position": {
-        "x": 361,
-        "y": -555
-      },
-      "data": {
-        "title": "Пакеты",
-        "desc": "Множество модулей",
-        "category": "modules",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "venv",
-      "position": {
-        "x": 793,
-        "y": -287
-      },
-      "data": {
-        "title": "Виртуальное окружение",
-        "desc": "Изоляция (venv)",
-        "category": "modules",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "testing",
-      "position": {
-        "x": 596,
-        "y": -195
-      },
-      "data": {
-        "title": "Тестирование",
-        "desc": "pytest / unittest",
-        "category": "modules",
-        "treeId": "basics"
-      }
-    },
-    {
       "id": "errors",
       "position": {
-        "x": -300,
-        "y": 250
+        "x": -473,
+        "y": 314
       },
       "data": {
         "title": "Ошибки",
@@ -378,79 +196,14 @@
       }
     },
     {
-      "id": "try_except",
-      "position": {
-        "x": -450,
-        "y": 400
-      },
-      "data": {
-        "title": "Try / Except",
-        "desc": "Ловля ошибок",
-        "category": "errors",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "raise",
-      "position": {
-        "x": -500,
-        "y": 250
-      },
-      "data": {
-        "title": "Вызов (raise)",
-        "desc": "Ручной выброс ошибок",
-        "category": "errors",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "finally",
-      "position": {
-        "x": -300,
-        "y": 450
-      },
-      "data": {
-        "title": "Finally / Else",
-        "desc": "Дополнительные блоки",
-        "category": "errors",
-        "treeId": "basics"
-      }
-    },
-    {
       "id": "files",
       "position": {
-        "x": 300,
-        "y": 250
+        "x": 639,
+        "y": 264
       },
       "data": {
         "title": "Файлы",
         "desc": "Работа с системой",
-        "category": "files",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "read_write",
-      "position": {
-        "x": 573,
-        "y": 426
-      },
-      "data": {
-        "title": "Чтение / Запись",
-        "desc": "Функция open()",
-        "category": "files",
-        "treeId": "basics"
-      }
-    },
-    {
-      "id": "context_mgrs",
-      "position": {
-        "x": 634,
-        "y": 291
-      },
-      "data": {
-        "title": "Контекст (with)",
-        "desc": "Менеджеры контекста",
         "category": "files",
         "treeId": "basics"
       }
@@ -497,21 +250,6 @@
       "animated": true
     },
     {
-      "id": "e-types-numbers",
-      "source": "types",
-      "target": "numbers"
-    },
-    {
-      "id": "e-types-strings",
-      "source": "types",
-      "target": "strings"
-    },
-    {
-      "id": "e-types-booleans",
-      "source": "types",
-      "target": "booleans"
-    },
-    {
       "id": "e-start-control",
       "source": "start",
       "target": "control",
@@ -534,26 +272,6 @@
       "animated": true
     },
     {
-      "id": "e-func-def",
-      "source": "functions",
-      "target": "def"
-    },
-    {
-      "id": "e-func-lambda",
-      "source": "functions",
-      "target": "lambda"
-    },
-    {
-      "id": "e-types-none",
-      "source": "types",
-      "target": "none"
-    },
-    {
-      "id": "e-types-typing",
-      "source": "types",
-      "target": "typing"
-    },
-    {
       "id": "e-control-match",
       "source": "control",
       "target": "match"
@@ -562,16 +280,6 @@
       "id": "e-control-async",
       "source": "control",
       "target": "async"
-    },
-    {
-      "id": "e-func-decorators",
-      "source": "functions",
-      "target": "decorators"
-    },
-    {
-      "id": "e-func-generators",
-      "source": "functions",
-      "target": "generators"
     },
     {
       "id": "e-start-oop",
@@ -601,66 +309,16 @@
       "animated": true
     },
     {
-      "id": "e-modules-import",
-      "source": "modules",
-      "target": "import"
-    },
-    {
-      "id": "e-modules-pip",
-      "source": "modules",
-      "target": "pip"
-    },
-    {
-      "id": "e-modules-packages",
-      "source": "modules",
-      "target": "packages"
-    },
-    {
-      "id": "e-modules-venv",
-      "source": "modules",
-      "target": "venv"
-    },
-    {
-      "id": "e-modules-testing",
-      "source": "modules",
-      "target": "testing"
-    },
-    {
       "id": "e-start-errors",
       "source": "start",
       "target": "errors",
       "animated": true
     },
     {
-      "id": "e-errors-try",
-      "source": "errors",
-      "target": "try_except"
-    },
-    {
-      "id": "e-errors-raise",
-      "source": "errors",
-      "target": "raise"
-    },
-    {
-      "id": "e-errors-finally",
-      "source": "errors",
-      "target": "finally"
-    },
-    {
       "id": "e-start-files",
       "source": "start",
       "target": "files",
       "animated": true
-    },
-    {
-      "id": "e-files-rw",
-      "source": "files",
-      "target": "read_write"
-    },
-    {
-      "id": "e-files-with",
-      "source": "files",
-      "target": "context_mgrs"
     },
     {
       "id": "e-collections-node-mr0m9c15-6ys-mr0m9su6",
@@ -678,21 +336,6 @@
       "title": "Типы данных и Переменные",
       "shortDesc": "Основа хранения информации",
       "content": "\n# Переменные и Типы Данных\n\nПеременные создаются в момент присвоения им значения. Писать тип данных не нужно, Python определит его сам.\n\n```python\nage = 25          # Целое число (int)\nname = \"Alice\"    # Строка (str)\npi = 3.14         # Вещественное число (float)\nis_active = True  # Логический тип (bool)\n```\n\nPython — язык с **динамической типизацией**, поэтому вы можете легко переназначить тип:\n```python\nx = 10\nx = \"Теперь я строка\" # Это сработает без ошибок\n```\n    "
-    },
-    "numbers": {
-      "title": "Числа",
-      "shortDesc": "Математика в Python",
-      "content": "\n# Числа в Python\n\nPython поддерживает несколько числовых типов:\n1. **int** — целые числа (могут быть любой длины)\n2. **float** — десятичные дроби (числа с плавающей точкой)\n3. **complex** — комплексные числа (например, `1 + 2j`)\n\n## Операции:\n```python\na = 10\nb = 3\n\nprint(a + b)  # Сложение -> 13\nprint(a - b)  # Вычитание -> 7\nprint(a * b)  # Умножение -> 30\nprint(a / b)  # Нормальное деление -> 3.3333333333333335\nprint(a // b) # Целочисленное деление -> 3\nprint(a % b)  # Остаток от деления -> 1\nprint(a ** b) # Возведение в степень -> 1000\n```\n    "
-    },
-    "strings": {
-      "title": "Строки",
-      "shortDesc": "Работа с текстом",
-      "content": "\n# Строки (Strings)\n\nСтроки в Python можно объявлять с помощью одинарных `'` или двойных `\"` кавычек.\n\n```python\ntext = \"Привет, мир!\"\n```\n\n## Полезные методы строк:\n```python\ns = \"  Python Awesome  \"\nprint(s.upper())      # \"  PYTHON AWESOME  \"\nprint(s.lower())      # \"  python awesome  \"\nprint(s.strip())      # \"Python Awesome\" (убирает пробелы по краям)\nprint(len(s))         # Узнать длину строки - 18\n```\n\n## f-строки (Форматирование):\nОчень удобный способ вставки переменных прямо в строку:\n```python\nname = \"Ivan\"\nage = 20\nprint(f\"Меня зовут {name} и мне {age} лет.\")\n```\n    "
-    },
-    "booleans": {
-      "title": "Логические типы",
-      "shortDesc": "Правда или Ложь",
-      "content": "\n# Логические типы (Booleans)\n\nВсего два значения: **True** (истина) и **False** (ложь). Обязательно пишутся с большой буквы!\n\n```python\nis_admin = True\nis_logged_in = False\n```\n\n## Логические операторы:\n```python\nx = True\ny = False\n\nprint(x and y) # Логическое И (False)\nprint(x or y)  # Логическое ИЛИ (True)\nprint(not x)   # Логическое НЕ (False)\n```\n\n## Операторы сравнения:\n```python\nprint(5 > 3)   # True\nprint(5 == 5)  # True (равно)\nprint(5 != 3)  # True (не равно)\n```\n    "
     },
     "collections": {
       "title": "Коллекции",
@@ -719,26 +362,6 @@
       "shortDesc": "Переиспользование кода",
       "content": "\n# Функции\n\nФункции позволяют группировать блоки кода, чтобы вызывать их по мере необходимости. \nЭто делает код чище и помогает избежать дублирования.\n\n- Создаются с помощью `def`.\n- Могут быть анонимными (lambda).\n- Могут возвращать значения с помощью `return`.\n    "
     },
-    "def": {
-      "title": "Определение функции",
-      "shortDesc": "Ключевое слово def",
-      "content": "\n# Определение функций (def)\n\nСоздаем функцию:\n```python\ndef greet(name):\n    # Тело функции содержит отступ\n    return f\"Привет, {name}!\"\n\n# Вызов функции:\nresult = greet(\"Аня\")\nprint(result) # Выведет: Привет, Аня!\n```\n\n## Значения по умолчанию\n```python\ndef power(base, exp=2):\n    return base ** exp\n\nprint(power(3))    # 9 (3 в квадрате)\nprint(power(3, 3)) # 27 (3 в кубе)\n```\n\n## Разнообразные аргументы (*args, **kwargs)\n```python\ndef summarize(*args):\n    return sum(args)\n\nprint(summarize(1, 2, 3, 4, 5)) # 15\n```\n    "
-    },
-    "lambda": {
-      "title": "Lambda-функции",
-      "shortDesc": "Анонимные функции",
-      "content": "\n# Анонимные функции (lambda)\n\n`lambda` позволяет создавать функции в одну строку без использования `def`.\n\nСинтаксис: `lambda аргументы: выражение`\n\n```python\n# Обычная функция\ndef square(x):\n    return x ** 2\n\n# Эквивалент с lambda\nsq = lambda x: x ** 2\nprint(sq(5)) # 25\n```\n\nЛямбда-функции часто используют там, где функция нужна на один раз. Например в сортировке:\n```python\npoints = [(1, 2), (3, 1), (5, -1)]\n\n# Сортируем список по второму элементу кортежа\npoints.sort(key=lambda item: item[1])\nprint(points) # [(5, -1), (3, 1), (1, 2)]\n```\n    "
-    },
-    "none": {
-      "title": "Тип None (NoneType)",
-      "shortDesc": "Отсутствие значения",
-      "content": "\n# None (Пустота)\n\nВ Python `None` — это специальный тип данных (NoneType), который обозначает отсутствие какого-либо значения. Это аналог `null` в других языках.\n\n```python\nuser = None\n\nif user is None:\n    print(\"Пользователь не найден\")\n```\n\n## Особенности:\n- Функция, которая ничего не возвращает через `return`, неявно возвращает `None`.\n- При проверке `None` рекомендуется использовать оператор `is`, а не `==`.\n    "
-    },
-    "typing": {
-      "title": "Типизация (Type Hinting)",
-      "shortDesc": "Аннотации типов",
-      "content": "\n# Типизация в Python\n\nНесмотря на то, что Python язык с динамической типизацией, в современном коде принято использовать **аннотации типов**. Это не делает язык строго типизированным (интерпретатор не выдаст ошибку во время работы), но помогает редакторам кода (VS Code, PyCharm) и линтерам (например, mypy) находить ошибки до запуска программы.\n\n```python\ndef greet(name: str) -> str:\n    return f\"Привет, {name}\"\n\nage: int = 25\nis_active: bool = True\n```\n\n## Модуль typing\n\nДля более сложных структур используется встроенный модуль `typing`.\n\n```python\nfrom typing import List, Dict, Optional, Union\n\n# Список чисел\nscores: List[int] = [10, 20, 30]\n\n# Словарь, где ключ - строка, а значение - число\nconfig: Dict[str, int] = {\"port\": 8080}\n\n# Функция, которая может вернуть строку или ничего (None)\ndef get_user(user_id: int) -> Optional[str]:\n    if user_id == 1:\n        return \"Admin\"\n    return None\n```\n    "
-    },
     "match": {
       "title": "Match-Case",
       "shortDesc": "Сопоставление шаблонов",
@@ -748,16 +371,6 @@
       "title": "Асинхронность (asyncio)",
       "shortDesc": "async / await",
       "content": "\n# Асинхронное программирование\n\nАсинхронность позволяет вашей программе не блокироваться (не зависать) во время долгого ожидания, например, при скачивании файла из сети или запроса к базе данных. Пока одна задача \"ждет\", программа может выполнять другие полезные действия.\n\nДля этого в Python используется ключевое слово `async` для определения корутин и `await` для ожидания результатов.\n\n```python\nimport asyncio\n\nasync def fetch_data():\n    print(\"Начинаем скачивание...\")\n    # Симуляция долгой сетевой операции (2 секунды)\n    await asyncio.sleep(2) \n    print(\"Скачивание завершено!\")\n    return {\"data\": 42}\n\nasync def main():\n    print(\"Запуск программы\")\n    # await говорит: \"подожди результат этой корутины\"\n    result = await fetch_data() \n    print(result)\n\n# Запуск асинхронного цикла событий\nasyncio.run(main())\n```\n\nМодуль `asyncio` — это ядро асинхронной работы в стандартной библиотеке Python.\n    "
-    },
-    "decorators": {
-      "title": "Декораторы",
-      "shortDesc": "Обертки функций",
-      "content": "\n# Декораторы\n\nДекоратор — это функция, которая позволяет менять поведение другой функции, не изменяя ее код напрямую. Выглядит как символ `@` перед объявлением функции.\n\n```python\ndef my_decorator(func):\n    def wrapper():\n        print(\"Что-то делаем ДО вызова функции.\")\n        func()\n        print(\"Что-то делаем ПОСЛЕ вызова функции.\")\n    return wrapper\n\n@my_decorator\ndef say_hello():\n    print(\"Привет!\")\n\nsay_hello()\n# Выведет:\n# Что-то делаем ДО вызова функции.\n# Привет!\n# Что-то делаем ПОСЛЕ вызова функции.\n```\n    "
-    },
-    "generators": {
-      "title": "Генераторы и Итераторы",
-      "shortDesc": "yield (ленивые вычисления)",
-      "content": "\n# Генераторы\n\nГенераторы — это специальный вид функций, которые могут приостанавливать свое выполнение и возвращать промежуточный результат. Для этого используется ключевое слово `yield`.\n\nГлавный плюс генераторов: они **экономят память**. Вместо того чтобы сразу создавать огромный список в памяти, генератор вычисляет элементы \"на лету\" по одному.\n\n```python\ndef count_up_to(max_value):\n    count = 1\n    while count <= max_value:\n        yield count # Возвращаем значение и ставим на паузу\n        count += 1\n\n# Использование\ncounter = count_up_to(5)\nfor number in counter:\n    print(number) \n# Выведет 1 2 3 4 5\n```\n\n## Генераторные выражения\n\nПохоже на списковые включения (list comprehensions), но используются круглые скобки.\n\n```python\n# Обычный список (сразу в памяти)\nsquares_list = [x**2 for x in range(1000000)] \n\n# Генератор (занимает минимум памяти)\nsquares_gen = (x**2 for x in range(1000000))\n```\n    "
     },
     "oop": {
       "title": "ООП",
@@ -784,65 +397,15 @@
       "shortDesc": "Организация кода",
       "content": "\n# Модули в Python\n\nЛюбой текстовый файл с расширением `.py` — это уже **модуль**.\nВы можете писать код в одном файле и использовать его в другом. Это отличный способ не превращать программу в огромную нечитаемую портянку.\n\nPython также поставляется с огромной **стандартной библиотекой** — кучей встроенных модулей (`math`, `datetime`, `os`, `random` и др.), которые готовы к использованию.\n    "
     },
-    "import": {
-      "title": "Импорт (import)",
-      "shortDesc": "Как подключить",
-      "content": "\n# Импорт кода (import)\n\nКоманда `import` используется, чтобы загрузить функции, классы или переменные из другого файла (или библиотеки) в ваш скрипт.\n\n```python\n# Подключить весь модуль\nimport math\nprint(math.sqrt(16)) # 4.0\n\n# Подключить только нужную функцию\nfrom random import randint\nprint(randint(1, 10)) # Случайное число от 1 до 10\n\n# Импорт с синонимом (алиасом)\nimport datetime as dt\nprint(dt.datetime.now())\n```\n    "
-    },
-    "pip": {
-      "title": "Менеджер pip",
-      "shortDesc": "Установка библиотек",
-      "content": "\n# pip (Python Package Installer)\n\n`pip` — это программа (менеджер пакетов), которая позволяет устанавливать библиотеки от других разработчиков со всего мира (из реестра PyPI).\n\n## Примеры команд терминала:\n```bash\n# Установка библиотеки (например requests)\npip install requests\n\n# Удаление библиотеки\npip uninstall requests\n\n# Список установленных библиотек\npip list\n```\n\nПосле установки вы можете использовать библиотеку через стандартный `import requests`.\n    "
-    },
-    "packages": {
-      "title": "Пакеты",
-      "shortDesc": "Папки с модулями",
-      "content": "\n# Пакеты (Packages)\n\nПакет — это просто директория (папка), которая содержит множество модулей (`.py` файлов) и (опционально) файл `__init__.py`, который говорит Питону, что эта папка — конфигурация пакета.\n\n```text\nmy_project/\n  main.py\n  utils/       <-- Пакет\n    __init__.py\n    math_tools.py\n    string_tools.py\n```\n\nИмпорт модуля из вложенной папки:\n```python\nfrom utils.math_tools import add_numbers\n```\n    "
-    },
-    "venv": {
-      "title": "Виртуальное окружение",
-      "shortDesc": "Изоляция проектов (venv)",
-      "content": "\n# Виртуальное окружение (Virtual Environment)\n\nПредставьте, что у вас есть Проект А, которому нужна библиотека `requests` версии 1.0. И Проект Б, которому нужна та же библиотека, но обязательно версии 2.0. Если ставить всё глобально на компьютер — будет конфликт.\n\nВиртуальное окружение решает эту проблему — оно создает **отдельную изолированную песочницу** (со своим pip и библиотеками) для каждого проекта.\n\nВстроенный модуль для этого — `venv`.\n\n## Как это работает?\n\n1. Перейдите в папку вашего проекта в терминале.\n2. Создайте окружение (оно появится в скрытой папке `.venv`):\n   ```bash\n   python -m venv .venv\n   ```\n3. Активируйте его:\n   - **Windows:** `.venv\\Scripts\\activate`\n   - **MacOS/Linux:** `source .venv/bin/activate`\n4. Устанавливайте пакеты:\n   ```bash\n   pip install requests\n   ```\nТеперь этот модуль установлен **только** в папке вашего проекта!\n    "
-    },
-    "testing": {
-      "title": "Тестирование",
-      "shortDesc": "pytest / unittest",
-      "content": "\n# Тестирование кода\n\nПисать тесты — признак хорошего тона. Тесты проверяют, делает ли ваш код то, что от него ожидается, и защищают от поломок в будущем.\n\nВ Python есть встроенный модуль `unittest`, но стандартом де-факто в индустрии стал сторонний фреймворк **pytest**, потому что он намного удобней и лаконичней.\n\n## Пример с pytest\n\nУстановка: `pip install pytest`\n\nПредставим, что у нас есть функция:\n```python\n# файл math_tools.py\ndef add(a, b):\n    return a + b\n```\n\nМы создаем файл для тестов `test_math_tools.py`:\n```python\nfrom math_tools import add\n\ndef test_add_positive():\n    assert add(2, 3) == 5\n\ndef test_add_negative():\n    assert add(-1, -1) == -2\n```\n\nЗапуск через терминал: `pytest`. Фреймворк сам найдет все файлы с префиксом `test_`, выполнит в них функции и покажет зеленый или красный статус!\n    "
-    },
     "errors": {
       "title": "Ошибки и Исключения",
       "shortDesc": "Защита от краша",
       "content": "\n# Исключения (Exceptions)\n\nВ процессе работы программы может пойти что-то не так:\n- Попытка открыть несуществующий файл (FileNotFoundError)\n- Деление на 0 (ZeroDivisionError)\n- Сложение текста с числом (TypeError)\n\nЕсли такую ошибку не перехватить, программа полностью \"упадет\" (завершится с ошибкой). Механизм исключений позволяет перехватить ошибку и отреагировать адекватно.\n    "
     },
-    "try_except": {
-      "title": "Try / Except",
-      "shortDesc": "Ловля ошибок",
-      "content": "\n# Конструкция Try / Except\n\nВы можете \"попробовать\" (`try`) выполнить код. Если он вызовет ошибку, вы поймаете ее в блоке `except`.\n\n```python\ntry:\n    result = 10 / 0\nexcept ZeroDivisionError:\n    print(\"На ноль делить нельзя!\")\n\nprint(\"Программа работает дальше без сбоев.\")\n```\n\nМожно ловить любые ошибки не уточняя тип (через базовый Exception):\n```python\ntry:\n    x = int(\"Привет\")\nexcept Exception as e:\n    print(f\"Поймали ошибку: {e}\")\n```\n    "
-    },
-    "raise": {
-      "title": "raise (Вызов ошибки)",
-      "shortDesc": "Сгенерировать ошибку",
-      "content": "\n# Оператор raise\n\nВы можете самостоятельно выбрасывать ошибки, если что-то идет не так по вашей логике (например, пришли плохие данные).\n\n```python\ndef set_age(age):\n    if age < 0:\n        raise ValueError(\"Возраст не может быть отрицательным!\")\n    return age\n\n# Вызов функции с неверными данными сгенерирует ошибку\nset_age(-5) \n# ValueError: Возраст не может быть отрицательным!\n```\n    "
-    },
-    "finally": {
-      "title": "Else и Finally",
-      "shortDesc": "Окончание Try",
-      "content": "\n# Блоки Else и Finally\n\nКонструкцию Try/Except можно расширить дополнительной логикой:\n\n```python\ntry:\n    file = open(\"data.txt\", \"r\")\n    # чтение данных...\nexcept FileNotFoundError:\n    print(\"Файл не найден!\")\nelse:\n    # Выполнится ТОЛЬКО если в try не было никаких ошибок\n    print(\"Чтение успешно завершено.\")\nfinally:\n    # Выполнится вообще ВСЕГДА и при любых обстоятельствах\n    # (часто пишут для закрытия открытых файлов или портов)\n    print(\"Конец работы блока.\")\n```\n    "
-    },
     "files": {
       "title": "Файлы",
       "shortDesc": "Работа с файлами",
       "content": "\n# Работа с файловой системой\n\nПрограммы на Python часто должны читать информацию с жесткого диска или сохранять её в файлы. Для базовой работы с файлами в Python есть встроенная функция `open()`.\n\nФайлы бывают:\n- **Текстовые** (читаемый текст - .txt, .json, .csv)\n- **Бинарные** (байты данных - .jpg, .zip, .exe)\n    "
-    },
-    "read_write": {
-      "title": "Чтение / Запись",
-      "shortDesc": "Функция open()",
-      "content": "\n# Открытие файлов\n\nДля работы с файлами используется `open(имя_файла, режим_работы)`.\n\nБазовые режимы:\n- `\"r\"` (read) — чтение.\n- `\"w\"` (write) — запись (полностью перезапишет файл).\n- `\"a\"` (append) — дозапись (добавит новые строки в конец).\n\n```python\n# Запись\nfile = open(\"hello.txt\", \"w\", encoding=\"utf-8\")\nfile.write(\"Привет из Питона!\")\nfile.close() # Важно вручную закрыть файл!\n\n# Чтение\nfile = open(\"hello.txt\", \"r\", encoding=\"utf-8\")\ncontent = file.read()\nprint(content)\nfile.close()\n```\n    "
-    },
-    "context_mgrs": {
-      "title": "Менеджеры контекста",
-      "shortDesc": "Ключевое слово with",
-      "content": "\n# Менеджеры контекста (with)\n\nЧтобы не забывать писать `file.close()`, в Питоне есть конструкция `with`. Она **автоматически** закрывает за собой файл (или другое соединение), даже если внутри произошла внезапная ошибка!\n\n```python\nwith open(\"hello.txt\", \"r\", encoding=\"utf-8\") as file:\n    content = file.read()\n    print(content)\n    \n# Относительно этого отступа (за границами блока with) \n# файл УЖЕ безопасно закрыт.\n```\nЭто самый правильный \"Pythonic\" способ работы с файлами.\n    "
     },
     "node-mr0m9c15-6ys": {
       "title": "Новый узел",
